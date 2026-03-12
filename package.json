@@ -4,6 +4,7 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
+    "start": "NODE_ENV=PRODUCAO tsx watch src/index.ts",
     "dev": "NODE_ENV=PRODUCAO ts-node-dev src/index.ts",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -26,6 +27,7 @@
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "pg": "^8.20.0",
+    "tsx": "^4.21.0",
     "undici-types": "^7.18.2"
   },
   "description": ""
