@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "NODE_ENV=PRODUCAO tsx watch src/index.ts",
+    "start": "NODE_ENV=PRODUCAO node dist/index.js",
     "dev": "NODE_ENV=PRODUCAO ts-node-dev src/index.ts",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
