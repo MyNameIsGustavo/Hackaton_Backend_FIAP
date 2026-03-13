@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  
+}
+
+model Professor {
+  id            Int      @id @default(autoincrement())
+  nomeCompleto  String
+  email         String   @unique
+  senha         String
+  telefone      String
+  idade         Int
+  formacao      String
+  especialidade String
+  dataCadastro  DateTime
+  isAtivo       Boolean
+  aulas         Aula[]
+}
+
+model HabilidadeBNCC {
+  id         Int    @id @default(autoincrement())
+  codigo     String
+  descricao  String
+  anoEscolar Int
+
+  objetoConhecimentoId Int
+  objetoConhecimento   ObjetoConhecimento @relation(fields: [objetoConhecimentoId], references: [id])
+
+  competencias CompetenciaBNCC[]
+  planoAula    PlanoAula?        @relation(fields: [planoAulaId], references: [id])
+  planoAulaId  Int?
+  avaliacao    Avaliacao?        @relation(fields: [avaliacaoId], references: [id])
+  avaliacaoId  Int?
+}
+
+model PlanoAula {
+  id Int @id @default(autoincrement())
+
+  aulaId Int  @unique
+  aula   Aula @relation(fields: [aulaId], references: [id])
+
+  objetivo          String
+  metodologia       String
+  recursosDidaticos String
+  avaliacao         String
+  dataCadastro      DateTime
+
+  habilidadesBNCC HabilidadeBNCC[]
+}
+
+model Avaliacao {
+  id            Int      @id @default(autoincrement())
+  nome          String
+  dataAvaliacao DateTime
+  tipo          String
+  isAtivo       Boolean
+
+  turmaId Int
+  turma   Turma @relation(fields: [turmaId], references: [id])
+
+  materiaId Int
+  materia   Materia @relation(fields: [materiaId], references: [id])
+
+  habilidadesBNCC HabilidadeBNCC[]
+}
+
+model CompetenciaBNCC {
+  id               Int             @id @default(autoincrement())
+  codigo           String
+  descricao        String
+  habilidadeBNCC   HabilidadeBNCC? @relation(fields: [habilidadeBNCCId], references: [id])
+  habilidadeBNCCId Int?
+}
+
+model UnidadeTematica {
+  id   Int    @id @default(autoincrement())
+  nome String
+
+  materiaId Int
+  materia   Materia @relation(fields: [materiaId], references: [id])
+
+  objetosConhecimento ObjetoConhecimento[]
+}
+
+model ObjetoConhecimento {
+  id        Int    @id @default(autoincrement())
+  nome      String
+  descricao String
+
+  unidadeTematicaId Int
+  unidadeTematica   UnidadeTematica @relation(fields: [unidadeTematicaId], references: [id])
+
+  habilidades HabilidadeBNCC[]
+}
+
+model Materia {
+  id               Int               @id @default(autoincrement())
+  nome             String
+  areaConhecimento String
+  dataCadastro     DateTime
+  isAtivo          Boolean
+  periodoId        Int
+  periodo          Periodo           @relation(fields: [periodoId], references: [id])
+  aulas            Aula[]
+  avaliacaos       Avaliacao[]
+  unidadeTematicas UnidadeTematica[]
+}
+
+model Turma {
+  id         Int     @id @default(autoincrement())
+  nome       String
+  anoEscolar Int
+  anoLetivo  Int
+  isAtivo    Boolean
+
+  aulas      Aula[]
+  periodoId  Int
+  periodo    Periodo     @relation(fields: [periodoId], references: [id])
+  avaliacaos Avaliacao[]
+}
+
+model Periodo {
+  id            Int    @id @default(autoincrement())
+  nome          String
+  horarioInicio String
+  horarioFim    String
+
+  turmas   Turma[]
+  materias Materia[]
+}
+
+model Aula {
+  id                    Int         @id @default(autoincrement())
+  nome                  String
+  objetivosAprendizagem String
+  dataAula              DateTime
+  isAtivo               Boolean
+  professores           Professor[]
+  turmaId               Int
+  turma                 Turma       @relation(fields: [turmaId], references: [id])
+  planoAula             PlanoAula?
+  materia               Materia?    @relation(fields: [materiaId], references: [id])
+  materiaId             Int?
+}
