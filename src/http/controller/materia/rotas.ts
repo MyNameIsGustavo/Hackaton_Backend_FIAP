@@ -56,7 +56,7 @@ export async function materiasRotas(app: Application) {
      *         description: Não autorizado
      */
     app.get("/materias", autenticacaoMiddleware, buscarTodos);
-    
+
     /**
      * @swagger
      * /materia:
