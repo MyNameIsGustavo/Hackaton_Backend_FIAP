@@ -4,6 +4,7 @@ import { buscarPorID } from "./in/buscarPorID";
 import { buscarTodos } from "./in/buscarTodos";
 import { deletar } from "./in/deletar";
 import { cadastro } from "./in/cadastro";
+import { alterar } from "./in/alterar";
 
 export async function aulaRotas(app: Application) {
     /**
@@ -79,6 +80,7 @@ export async function aulaRotas(app: Application) {
      *         description: Não autorizado
      */
     app.delete("/aula/:id", autenticacaoMiddleware, deletar);
+
     /**
      * @swagger
      * /aula:
@@ -93,6 +95,13 @@ export async function aulaRotas(app: Application) {
      *         application/json:
      *           schema:
      *             $ref: '#/components/schemas/AulaCadastro'
+     *           example:
+     *             nome: "Introdução às Frações"
+     *             objetivosAprendizagem: "Compreender o conceito de frações"
+     *             dataAula: "2026-03-20"
+     *             isAtivo: true
+     *             turmaId: 1
+     *             materiaId: 2
      *     responses:
      *       201:
      *         description: Aula cadastrada com sucesso
@@ -100,4 +109,41 @@ export async function aulaRotas(app: Application) {
      *         description: Erro de validação
      */
     app.post("/aula", autenticacaoMiddleware, cadastro);
+
+    /**
+     * @swagger
+     * /aula/{id}:
+     *   put:
+     *     summary: Atualizar aula
+     *     tags: [Aulas]
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         description: ID da aula
+     *         schema:
+     *           type: integer
+     *           example: 1
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/AulaCadastro'
+     *           example:
+     *             nome: "Frações Avançadas"
+     *             objetivosAprendizagem: "Resolver problemas com frações"
+     *             dataAula: "2026-03-22"
+     *             isAtivo: true
+     *             turmaId: 1
+     *             materiaId: 2
+     *     responses:
+     *       200:
+     *         description: Aula atualizada com sucesso
+     *       404:
+     *         description: Aula não encontrada
+     */
+    app.put("/aula/:id", autenticacaoMiddleware, alterar);
 }

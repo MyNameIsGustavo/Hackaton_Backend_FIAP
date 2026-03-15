@@ -3,6 +3,7 @@ import { autenticacaoMiddleware } from "../../../middleware/autenticacao-middlew
 import { buscarPorID } from "./in/buscarPorID";
 import { buscarTodos } from "./in/buscarTodos";
 import { cadastro } from "./in/cadastro";
+import { alterar } from "./in/alterar";
 
 export async function materiasRotas(app: Application) {
     /**
@@ -71,6 +72,11 @@ export async function materiasRotas(app: Application) {
      *         application/json:
      *           schema:
      *             $ref: '#/components/schemas/MateriaCadastro'
+     *           example:
+     *             nome: "Matemática"
+     *             areaConhecimento: "Ciências Exatas"
+     *             isAtivo: true
+     *             periodoId: 1
      *     responses:
      *       201:
      *         description: Matéria cadastrada com sucesso
@@ -80,4 +86,43 @@ export async function materiasRotas(app: Application) {
      *         description: Não autorizado
      */
     app.post("/materia", autenticacaoMiddleware, cadastro);
+
+    /**
+     * @swagger
+     * /materia/{id}:
+     *   put:
+     *     summary: Atualizar matéria
+     *     tags: [Materias]
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         description: ID da matéria
+     *         schema:
+     *           type: integer
+     *           example: 1
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/MateriaCadastro'
+     *           example:
+     *             nome: "Matemática Avançada"
+     *             areaConhecimento: "Ciências Exatas"
+     *             isAtivo: true
+     *             periodoId: 2
+     *     responses:
+     *       200:
+     *         description: Matéria atualizada com sucesso
+     *       400:
+     *         description: Erro de validação
+     *       404:
+     *         description: Matéria não encontrada
+     *       401:
+     *         description: Não autorizado
+     */
+    app.put("/materia/:id", autenticacaoMiddleware, alterar);
 }

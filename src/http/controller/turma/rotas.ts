@@ -2,6 +2,7 @@ import { Application } from "express";
 import { buscarPorID } from "./in/buscarPorID";
 import { buscarTodos } from "./in/buscarTodos";
 import { cadastro } from "./in/cadastro";
+import { alterar } from "./in/alterar";
 import { autenticacaoMiddleware } from "../../../middleware/autenticacao-middleware";
 
 export async function turmaRotas(app: Application) {
@@ -71,6 +72,12 @@ export async function turmaRotas(app: Application) {
      *         application/json:
      *           schema:
      *             $ref: '#/components/schemas/TurmaCadastro'
+     *           example:
+     *             nome: "1º Ano A"
+     *             anoEscolar: 1
+     *             anoLetivo: 2026
+     *             isAtivo: true
+     *             periodoId: 1
      *     responses:
      *       201:
      *         description: Turma cadastrada com sucesso
@@ -80,4 +87,44 @@ export async function turmaRotas(app: Application) {
      *         description: Não autorizado
      */
     app.post("/turmas", autenticacaoMiddleware, cadastro);
+
+    /**
+     * @swagger
+     * /turma/{id}:
+     *   put:
+     *     summary: Atualizar turma
+     *     tags: [Turmas]
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         description: ID da turma
+     *         schema:
+     *           type: integer
+     *           example: 1
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/TurmaCadastro'
+     *           example:
+     *             nome: "2º Ano A"
+     *             anoEscolar: 2
+     *             anoLetivo: 2026
+     *             isAtivo: true
+     *             periodoId: 1
+     *     responses:
+     *       200:
+     *         description: Turma atualizada com sucesso
+     *       400:
+     *         description: Erro de validação
+     *       404:
+     *         description: Turma não encontrada
+     *       401:
+     *         description: Não autorizado
+     */
+    app.put("/turma/:id", autenticacaoMiddleware, alterar);
 }
