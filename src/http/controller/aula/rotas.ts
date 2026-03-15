@@ -25,10 +25,6 @@ export async function aulaRotas(app: Application) {
      *     responses:
      *       200:
      *         description: Aula encontrada
-     *         content:
-     *           application/json:
-     *             schema:
-     *               $ref: '#/components/schemas/Aula'
      *       400:
      *         description: ID inválido
      *       404:
@@ -46,12 +42,6 @@ export async function aulaRotas(app: Application) {
      *     responses:
      *       200:
      *         description: Lista de aulas retornada com sucesso
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: array
-     *               items:
-     *                 $ref: '#/components/schemas/Aula'
      *       401:
      *         description: Não autorizado
      */
@@ -92,9 +82,6 @@ export async function aulaRotas(app: Application) {
      *     requestBody:
      *       required: true
      *       content:
-     *         application/json:
-     *           schema:
-     *             $ref: '#/components/schemas/AulaCadastro'
      *           example:
      *             nome: "Introdução às Frações"
      *             objetivosAprendizagem: "Compreender o conceito de frações"
@@ -130,8 +117,6 @@ export async function aulaRotas(app: Application) {
      *       required: true
      *       content:
      *         application/json:
-     *           schema:
-     *             $ref: '#/components/schemas/AulaCadastro'
      *           example:
      *             nome: "Frações Avançadas"
      *             objetivosAprendizagem: "Resolver problemas com frações"

@@ -24,10 +24,6 @@ export async function materiasRotas(app: Application) {
      *     responses:
      *       200:
      *         description: Matéria encontrada
-     *         content:
-     *           application/json:
-     *             schema:
-     *               $ref: '#/components/schemas/Materia'
      *       400:
      *         description: ID inválido
      *       404:
@@ -47,12 +43,6 @@ export async function materiasRotas(app: Application) {
      *     responses:
      *       200:
      *         description: Lista de matérias retornada com sucesso
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: array
-     *               items:
-     *                 $ref: '#/components/schemas/Materia'
      *       401:
      *         description: Não autorizado
      */
@@ -70,8 +60,6 @@ export async function materiasRotas(app: Application) {
      *       required: true
      *       content:
      *         application/json:
-     *           schema:
-     *             $ref: '#/components/schemas/MateriaCadastro'
      *           example:
      *             nome: "Matemática"
      *             areaConhecimento: "Ciências Exatas"
@@ -107,8 +95,6 @@ export async function materiasRotas(app: Application) {
      *       required: true
      *       content:
      *         application/json:
-     *           schema:
-     *             $ref: '#/components/schemas/MateriaCadastro'
      *           example:
      *             nome: "Matemática Avançada"
      *             areaConhecimento: "Ciências Exatas"

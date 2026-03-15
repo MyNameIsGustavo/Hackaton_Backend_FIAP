@@ -24,10 +24,6 @@ export async function turmaRotas(app: Application) {
      *     responses:
      *       200:
      *         description: Turma encontrada
-     *         content:
-     *           application/json:
-     *             schema:
-     *               $ref: '#/components/schemas/Turma'
      *       400:
      *         description: ID inválido
      *       404:
@@ -51,8 +47,6 @@ export async function turmaRotas(app: Application) {
      *           application/json:
      *             schema:
      *               type: array
-     *               items:
-     *                 $ref: '#/components/schemas/Turma'
      *       401:
      *         description: Não autorizado
      */
@@ -70,8 +64,6 @@ export async function turmaRotas(app: Application) {
      *       required: true
      *       content:
      *         application/json:
-     *           schema:
-     *             $ref: '#/components/schemas/TurmaCadastro'
      *           example:
      *             nome: "1º Ano A"
      *             anoEscolar: 1
@@ -108,8 +100,6 @@ export async function turmaRotas(app: Application) {
      *       required: true
      *       content:
      *         application/json:
-     *           schema:
-     *             $ref: '#/components/schemas/TurmaCadastro'
      *           example:
      *             nome: "2º Ano A"
      *             anoEscolar: 2
