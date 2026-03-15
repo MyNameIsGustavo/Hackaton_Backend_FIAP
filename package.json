@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=PRODUCAO node dist/index.js",
     "dev": "NODE_ENV=DESENVOLVIMENTO ts-node-dev src/index.ts",
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
