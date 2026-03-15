@@ -1,0 +1,25 @@
+# Usa a imagem oficial do Node
+FROM node:20-alpine
+
+# Cria um diretório de trabalho
+WORKDIR /app
+
+# Copia os arquivos do projeto
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+COPY .env .env
+
+# Prisma client
+RUN npx prisma generate
+
+# Build do TypeScript
+RUN npm run build
+
+# Expõe a porta
+EXPOSE 3000
+
+# Comando para rodar a aplicação
+CMD ["node", "dist/app.js"]

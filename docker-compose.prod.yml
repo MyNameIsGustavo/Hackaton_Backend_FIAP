@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  backend_hackaton:
+    container_name: backend_hackaton
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=PRODUCAO
+    env_file:
+      - .env
+    depends_on:
+      - db_hackaton
+    networks:
+      - backend_hackaton
+    command: sh -c "npx prisma migrate deploy && npm start"
+
+  db_hackaton:
+    container_name: postgres
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend_hackaton
+      
+volumes:
+  postgres_data:
+
+networks:
+  backend_hackaton:
+    driver: bridge

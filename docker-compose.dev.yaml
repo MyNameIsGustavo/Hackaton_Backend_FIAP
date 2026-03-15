@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+  backend_hackaton:
+    build: .
+    container_name: backend_hackaton
+    env_file:
+      - .env.dev
+    environment:
+      - NODE_ENV=DESENVOLVIMENTO
+    volumes:
+      - .:/app
+    ports:
+      - "${PORT_APP_DEV}:3000"
+    depends_on:
+      - db_hackaton_dev
+    networks:
+      - hackaton_network_dev
+    command: sh -c "npx prisma migrate deploy && npm run dev"
+
+  db_hackaton_dev:
+    container_name: postgres_dev_db
+    image: postgres:15-alpine
+    env_file:
+      - .env.dev
+    environment:
+      POSTGRES_USER: ${DB_USER_DEV}
+      POSTGRES_PASSWORD: ${DB_PASSWORD_DEV}
+      POSTGRES_DB: ${DB_DEV}
+    ports:
+      - "${DB_PORT_DEV}:5432"
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+    networks:
+      - hackaton_network_dev
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pg_admin_db
+    env_file:
+      - .env.dev
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL_DEV}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD_DEV}
+    ports:
+      - "8080:80"
+    depends_on:
+      - db_hackaton_dev
+    networks:
+      - hackaton_network_dev
+
+volumes:
+  postgres_data_dev:
+
+networks:
+  hackaton_network_dev:
+    driver: bridge

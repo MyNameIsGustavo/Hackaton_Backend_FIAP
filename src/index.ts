@@ -1,4 +1,8 @@
+import { materiasRotas } from "./http/controller/materia/rotas";
+import { periodosRotas } from "./http/controller/periodos/rotas";
+import { professorRotas } from "./http/controller/professor/rotas";
 import { bancoDeDados } from "./lib/pg/db";
+import { processaSeeds } from "./repositories/pg/processaSeeds";
 import { app } from "./servidor";
 import dotenv from "dotenv";
 
@@ -8,8 +12,12 @@ dotenv.config({ path: envFile });
 
 async function appHackatonFIAP() {
     await bancoDeDados.conectar();
+    await processaSeeds();
 
     app;
+    await professorRotas(app);
+    await periodosRotas(app);
+    await materiasRotas(app);
 }
 
 appHackatonFIAP();
