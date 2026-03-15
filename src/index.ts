@@ -5,6 +5,7 @@ import { bancoDeDados } from "./lib/pg/db";
 import { processaSeeds } from "./repositories/pg/processaSeeds";
 import { app } from "./servidor";
 import dotenv from "dotenv";
+import { configuracaoSwagger } from "./swagger";
 
 dotenv.config();
 const envFile = process.env.NODE_ENV === 'PRODUCAO' ? '.env' : '.env.dev';
@@ -18,6 +19,8 @@ async function appHackatonFIAP() {
     await professorRotas(app);
     await periodosRotas(app);
     await materiasRotas(app);
+
+    configuracaoSwagger(app);
 }
 
 appHackatonFIAP();
