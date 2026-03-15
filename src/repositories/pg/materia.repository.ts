@@ -1,59 +1,59 @@
 import { prisma } from "../../prismaClient";
-import { IPeriodoRepository } from "../periodo.repository.interface";
-import { IPeriodo } from "../../entities/interfaces/IPeriodo";
+import { IMateria } from "../../entities/interfaces/IMateria";
+import { IMateriaRepository } from "../materia.repository.interface";
 
-export class PeriodoRepository implements IPeriodoRepository {
+export class MateriaRepository implements IMateriaRepository {
 
-    async buscarTodosPeriodos(): Promise<IPeriodo[] | []> {
+    async buscarTodasMaterias(): Promise<IMateria[] | []> {
         try {
-            const periodosExistente = await prisma.periodo.findMany();
+            const materiasExistentes = await prisma.materia.findMany();
 
-            if (!periodosExistente) return [];
+            if (!materiasExistentes) return [];
 
-            return periodosExistente as IPeriodo[];
+            return materiasExistentes as IMateria[];
         } catch (error) {
-            throw new Error(`Erro ao buscar Professor por email: ${error}`);
+            throw new Error(`Erro ao buscar todas materias: ${error}`);
         }
     }
 
-    async cadastrarPeriodo(dados: IPeriodo): Promise<IPeriodo | null> {
+    async cadastrarMateria(dados: IMateria): Promise<IMateria | null> {
         try {
-            const periodoCadastrado = await prisma.periodo.create({ data: dados });
+            const materiaCadastrada = await prisma.materia.create({ data: dados });
 
-            if (!periodoCadastrado) return null;
+            if (!materiaCadastrada) return null;
 
-            return periodoCadastrado as IPeriodo;
+            return materiaCadastrada as IMateria;
         } catch (error) {
-            throw new Error(`Erro ao cadastrar periodo: ${error}`);
+            throw new Error(`Erro ao cadastrar materia: ${error}`);
         }
     }
 
-    async buscarPeriodoPorID(id: number): Promise<IPeriodo | null> {
+    async buscarMateriaPorID(id: number): Promise<IMateria | null> {
         try {
-            const periodoSelecionado = await prisma.periodo.findUnique({ where: { id: id } });
+            const materiaSelecionada = await prisma.materia.findUnique({ where: { id: id } });
 
-            if (!periodoSelecionado) return null;
+            if (!materiaSelecionada) return null;
 
-            return periodoSelecionado as IPeriodo;
+            return materiaSelecionada as IMateria;
         } catch (error) {
-            throw new Error(`Erro ao buscar periodo por ID: ${error}`);
+            throw new Error(`Erro ao buscar materia por ID: ${error}`);
         }
     }
 
-    async alterarPeriodo(dados: IPeriodo, id: number): Promise<IPeriodo | null> {
+    async alterarMateria(dados: IMateria, id: number): Promise<IMateria | null> {
         try {
-            const periodoSelecionado = await prisma.periodo.findUnique({ where: { id: id } });
+            const materiaSelecionada = await prisma.materia.findUnique({ where: { id: id } });
 
-            if (!periodoSelecionado) return null;
+            if (!materiaSelecionada) return null;
 
-            const periodoAlterado = await prisma.periodo.update({
+            const materiaAlterada = await prisma.materia.update({
                 data: dados,
                 where: { id: id }
             })
 
-            return periodoAlterado as IPeriodo;
+            return materiaAlterada as IMateria;
         } catch (error) {
-            throw new Error(`Erro ao buscar periodo por ID: ${error}`);
+            throw new Error(`Erro ao buscar materia por ID: ${error}`);
         }
     }
 }

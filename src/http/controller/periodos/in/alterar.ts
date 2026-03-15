@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { Request, Response } from 'express';
-import { fabricaAlterarPeriodo } from "../../../../useCases/periodoUseCases/fabrica/alterar-periodo";
+import { fabricaAlterarPeriodo } from "../../../../useCases/periodoUseCases/fabrica/fabricaAlterar-periodo";
 
 export async function alterar(request: Request, response: Response) {
     try {
