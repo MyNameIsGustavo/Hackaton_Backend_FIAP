@@ -40,9 +40,57 @@ export async function materiasRotas(app: Application) {
      *     tags: [Materias]
      *     security:
      *       - bearerAuth: []
+     *     parameters:
+     *       - in: query
+     *         name: materia
+     *         required: false
+     *         description: Nome da matéria para filtro
+     *         schema:
+     *           type: string
+     *           example: Matemática
+     *       - in: query
+     *         name: pagina
+     *         required: false
+     *         description: Número da página
+     *         schema:
+     *           type: integer
+     *           example: 1
+     *       - in: query
+     *         name: limite
+     *         required: false
+     *         description: Quantidade de registros por página
+     *         schema:
+     *           type: integer
+     *           example: 10
+     *       - in: query
+     *         name: ordenaPor
+     *         required: false
+     *         description: Campo usado para ordenação
+     *         schema:
+     *           type: string
+     *           example: nome
+     *       - in: query
+     *         name: ordem
+     *         required: false
+     *         description: Direção da ordenação
+     *         schema:
+     *           type: string
+     *           enum: [asc, desc]
+     *           example: asc
      *     responses:
      *       200:
      *         description: Lista de matérias retornada com sucesso
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 type: object
+     *                 properties:
+     *                   id:
+     *                     type: integer
+     *                   nome:
+     *                     type: string
      *       401:
      *         description: Não autorizado
      */

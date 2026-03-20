@@ -1,16 +1,38 @@
 import { prisma } from "../../prismaClient";
-import { IMateria } from "../../entities/interfaces/IMateria";
+import { IMateria, IMateriaComRelacoes } from "../../entities/interfaces/IMateria";
 import { IMateriaRepository } from "../materia.repository.interface";
 
 export class MateriaRepository implements IMateriaRepository {
 
-    async buscarTodasMaterias(): Promise<IMateria[] | []> {
+    async buscarTodasMaterias(filtro: { nomeMateria?: string; pagina?: number; limite?: number; ordenaPor?: string; ordem?: "asc" | "desc"; }): Promise<IMateriaComRelacoes[]> {
         try {
-            const materiasExistentes = await prisma.materia.findMany();
+            const pagina = filtro.pagina ?? 1;
+            const limite = filtro.limite ?? 10;
 
-            if (!materiasExistentes) return [];
+            return await prisma.materia.findMany({
+                where: filtro.nomeMateria
+                    ? {
+                        nome: {
+                            contains: filtro.nomeMateria,
+                            mode: "insensitive"
+                        }
+                    }
+                    : undefined,
 
-            return materiasExistentes as IMateria[];
+                orderBy: {
+                    [filtro.ordenaPor ?? "nome"]: filtro.ordem ?? "asc"
+                },
+
+                skip: (pagina - 1) * limite,
+                take: limite,
+
+                include: {
+                    aulas: true,
+                    avaliacaos: true,
+                    periodo: true,
+                    unidadeTematicas: true
+                }
+            });
         } catch (error) {
             throw new Error(`Erro ao buscar todas materias: ${error}`);
         }
