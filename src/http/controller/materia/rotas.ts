@@ -32,6 +32,7 @@ export async function materiasRotas(app: Application) {
      *         description: Não autorizado
      */
     app.get("/materias/:id", autenticacaoMiddleware, buscarPorID);
+
     /**
      * @swagger
      * /materias:
@@ -91,6 +92,61 @@ export async function materiasRotas(app: Application) {
      *                     type: integer
      *                   nome:
      *                     type: string
+     *                   areaConhecimento:
+     *                     type: string
+     *                   dataCadastro:
+     *                     type: string
+     *                     format: date-time
+     *                   isAtivo:
+     *                     type: boolean
+     *                   periodoId:
+     *                     type: integer
+     *                   periodo:
+     *                     type: object
+     *                     properties:
+     *                       id:
+     *                         type: integer
+     *                       nome:
+     *                         type: string
+     *                       horarioInicio:
+     *                         type: string
+     *                         example: "07:00"
+     *                       horarioFim:
+     *                         type: string
+     *                         example: "12:00"
+     *                   aulas:
+     *                     type: array
+     *                     items:
+     *                       type: object
+     *                       properties:
+     *                         id:
+     *                           type: integer
+     *                         nome:
+     *                           type: string
+     *                         dataAula:
+     *                           type: string
+     *                           format: date-time
+     *                   avaliacaos:
+     *                     type: array
+     *                     items:
+     *                       type: object
+     *                       properties:
+     *                         id:
+     *                           type: integer
+     *                         nome:
+     *                           type: string
+     *                         dataAvaliacao:
+     *                           type: string
+     *                           format: date-time
+     *                   unidadeTematicas:
+     *                     type: array
+     *                     items:
+     *                       type: object
+     *                       properties:
+     *                         id:
+     *                           type: integer
+     *                         nome:
+     *                           type: string
      *       401:
      *         description: Não autorizado
      */
