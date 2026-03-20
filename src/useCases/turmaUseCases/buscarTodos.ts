@@ -1,10 +1,18 @@
 import type { ITurmaRepository } from "../../repositories/turma.repository.interface";
-import { ITurma } from "../../entities/interfaces/ITurma";
+import { ITurma, ITurmaComRelacoes } from "../../entities/interfaces/ITurma";
+
+type FiltroTurma = {
+    nomeTurma?: string;
+    pagina?: number;
+    limite?: number;
+    ordenaPor?: string;
+    ordem?: "asc" | "desc"
+};
 
 export class BuscarTodasTurmasUseCase {
     constructor(private turmaRepository: ITurmaRepository) { }
 
-    async processar(): Promise<ITurma[] | []> {
-        return await this.turmaRepository.buscarTodasTurmas();
+    async processar(filtro?: FiltroTurma): Promise<ITurmaComRelacoes[] | []> {
+        return await this.turmaRepository.buscarTodasTurmas(filtro);
     }
 }

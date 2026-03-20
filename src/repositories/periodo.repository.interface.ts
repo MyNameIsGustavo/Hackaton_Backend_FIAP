@@ -1,8 +1,8 @@
-import { IPeriodo } from "../entities/interfaces/IPeriodo";
+import { IPeriodo, IPeriodoComRelacoes } from "../entities/interfaces/IPeriodo";
 
 export interface IPeriodoRepository {
     cadastrarPeriodo(dados: IPeriodo): Promise<IPeriodo | null>
-    buscarTodosPeriodos(): Promise<IPeriodo[] | []>
+    buscarTodosPeriodos(filtro?: { nomePeriodo?: string }): Promise<IPeriodoComRelacoes[] | []>
     buscarPeriodoPorID(id: number): Promise<IPeriodo | null>;
     alterarPeriodo(dados: IPeriodo, id: number): Promise<IPeriodo | null>;
 }

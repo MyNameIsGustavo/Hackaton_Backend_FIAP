@@ -1,16 +1,37 @@
 import { prisma } from "../../prismaClient";
-import { ITurma } from "../../entities/interfaces/ITurma";
+import { ITurma, ITurmaComRelacoes } from "../../entities/interfaces/ITurma";
 import { ITurmaRepository } from "../turma.repository.interface";
 
 export class TurmaRepository implements ITurmaRepository {
 
-    async buscarTodasTurmas(): Promise<ITurma[] | []> {
+    async buscarTodasTurmas(filtro: { nomeTurma?: string; pagina?: number; limite?: number; ordenaPor?: string; ordem?: "asc" | "desc"; }): Promise<ITurmaComRelacoes[]> {
         try {
-            const turmasExistentes = await prisma.turma.findMany();
+            const pagina = filtro.pagina ?? 1;
+            const limite = filtro.limite ?? 10;
 
-            if (!turmasExistentes) return [];
+            return await prisma.turma.findMany({
+                where: filtro.nomeTurma
+                    ? {
+                        nome: {
+                            contains: filtro.nomeTurma,
+                            mode: "insensitive"
+                        }
+                    }
+                    : undefined,
 
-            return turmasExistentes as ITurma[];
+                orderBy: {
+                    [filtro.ordenaPor ?? "nome"]: filtro.ordem ?? "asc"
+                },
+
+                skip: (pagina - 1) * limite,
+                take: limite,
+
+                include: {
+                    periodo: true,
+                    aulas: true,
+                    avaliacaos: true
+                }
+            });
         } catch (error) {
             throw new Error(`Erro ao buscar todas turmas: ${error}`);
         }

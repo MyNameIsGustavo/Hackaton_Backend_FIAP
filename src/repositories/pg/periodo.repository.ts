@@ -1,18 +1,42 @@
 import { prisma } from "../../prismaClient";
 import { IPeriodoRepository } from "../periodo.repository.interface";
-import { IPeriodo } from "../../entities/interfaces/IPeriodo";
+import { IPeriodo, IPeriodoComRelacoes } from "../../entities/interfaces/IPeriodo";
 
 export class PeriodoRepository implements IPeriodoRepository {
 
-    async buscarTodosPeriodos(): Promise<IPeriodo[] | []> {
+    async buscarTodosPeriodos(filtro: { nomePeriodo?: string; pagina?: number; limite?: number; ordenaPor?: string; ordem?: "asc" | "desc"; }): Promise<IPeriodoComRelacoes[]> {
         try {
-            const periodosExistente = await prisma.periodo.findMany();
+            const page = filtro.pagina ?? 1;
+            const limit = filtro.limite ?? 10;
 
-            if (!periodosExistente) return [];
+            return await prisma.periodo.findMany({
+                where: filtro.nomePeriodo
+                    ? {
+                        nome: {
+                            contains: filtro.nomePeriodo,
+                            mode: "insensitive"
+                        }
+                    }
+                    : undefined,
 
-            return periodosExistente as IPeriodo[];
+                orderBy: {
+                    [filtro.ordenaPor ?? "nome"]: filtro.ordem ?? "asc"
+                },
+
+                skip: (page - 1) * limit,
+                take: limit,
+
+                include: {
+                    turmas: {
+                        where: { isAtivo: true }
+                    },
+                    materias: {
+                        where: { isAtivo: true }
+                    }
+                }
+            });
         } catch (error) {
-            throw new Error(`Erro ao buscar Professor por email: ${error}`);
+            throw new Error(`Erro ao buscar períodos: ${error}`);
         }
     }
 

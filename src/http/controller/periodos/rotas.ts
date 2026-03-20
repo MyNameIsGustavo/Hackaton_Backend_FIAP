@@ -14,6 +14,47 @@ export async function periodosRotas(app: Application) {
      *     tags: [Períodos]
      *     security:
      *       - bearerAuth: []
+     *     parameters:
+     *       - in: query
+     *         name: periodo
+     *         required: false
+     *         description: Nome do período (pode enviar múltiplos)
+     *         schema:
+     *           type: array
+     *           items:
+     *             type: string
+     *           example: ["manha", "tarde"]
+     *         style: form
+     *         explode: true
+     *       - in: query
+     *         name: page
+     *         required: false
+     *         description: Número da página
+     *         schema:
+     *           type: integer
+     *           example: 1
+     *       - in: query
+     *         name: limit
+     *         required: false
+     *         description: Quantidade de registros por página
+     *         schema:
+     *           type: integer
+     *           example: 10
+     *       - in: query
+     *         name: orderBy
+     *         required: false
+     *         description: Campo para ordenação
+     *         schema:
+     *           type: string
+     *           example: nome
+     *       - in: query
+     *         name: order
+     *         required: false
+     *         description: Direção da ordenação
+     *         schema:
+     *           type: string
+     *           enum: [asc, desc]
+     *           example: asc
      *     responses:
      *       200:
      *         description: Lista de períodos
@@ -34,10 +75,31 @@ export async function periodosRotas(app: Application) {
      *                   horarioFim:
      *                     type: string
      *                     example: "12:00"
-     *                   isAtivo:
-     *                     type: boolean
+     *                   turmas:
+     *                     type: array
+     *                     items:
+     *                       type: object
+     *                       properties:
+     *                         id:
+     *                           type: integer
+     *                         nome:
+     *                           type: string
+     *                         anoEscolar:
+     *                           type: integer
+     *                   materias:
+     *                     type: array
+     *                     items:
+     *                       type: object
+     *                       properties:
+     *                         id:
+     *                           type: integer
+     *                         nome:
+     *                           type: string
+     *                         areaConhecimento:
+     *                           type: string
      */
     app.get("/periodos", autenticacaoMiddleware, buscarTodos)
+    
     /**
      * @swagger
      * /periodo/{id}:

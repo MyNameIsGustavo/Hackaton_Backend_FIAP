@@ -5,5 +5,5 @@ export interface IAula {
     dataAula: Date;
     isAtivo: boolean;
     turmaId: number;
-    materiaId?: number;
+    materiaId?: number | null;
 }

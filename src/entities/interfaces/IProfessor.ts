@@ -1,3 +1,5 @@
+import { IAula } from "./IAula";
+
 export interface IProfessor {
     id?: number;
     nomeCompleto: string;
@@ -9,4 +11,8 @@ export interface IProfessor {
     especialidade: string;
     dataCadastro: Date;
     isAtivo: boolean;
+}
+
+export interface IProfessorComRelacoes extends IAula {
+    aulas: IAula[];
 }

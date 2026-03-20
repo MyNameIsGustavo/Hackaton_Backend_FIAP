@@ -40,6 +40,43 @@ export async function turmaRotas(app: Application) {
      *     tags: [Turmas]
      *     security:
      *       - bearerAuth: []
+     *     parameters:
+     *       - in: query
+     *         name: nomeTurma
+     *         required: false
+     *         description: Nome da turma para filtro
+     *         schema:
+     *           type: string
+     *           example: "1º Ano"
+     *       - in: query
+     *         name: pagina
+     *         required: false
+     *         description: Número da página
+     *         schema:
+     *           type: integer
+     *           example: 1
+     *       - in: query
+     *         name: limite
+     *         required: false
+     *         description: Quantidade de registros por página
+     *         schema:
+     *           type: integer
+     *           example: 10
+     *       - in: query
+     *         name: ordenaPor
+     *         required: false
+     *         description: Campo para ordenação
+     *         schema:
+     *           type: string
+     *           example: nome
+     *       - in: query
+     *         name: ordem
+     *         required: false
+     *         description: Direção da ordenação
+     *         schema:
+     *           type: string
+     *           enum: [asc, desc]
+     *           example: asc
      *     responses:
      *       200:
      *         description: Lista de turmas retornada com sucesso
@@ -47,6 +84,75 @@ export async function turmaRotas(app: Application) {
      *           application/json:
      *             schema:
      *               type: array
+     *               items:
+     *                 type: object
+     *                 properties:
+     *                   id:
+     *                     type: integer
+     *                   nome:
+     *                     type: string
+     *                   anoEscolar:
+     *                     type: integer
+     *                   anoLetivo:
+     *                     type: integer
+     *                   isAtivo:
+     *                     type: boolean
+     *                   periodoId:
+     *                     type: integer
+     *                   periodo:
+     *                     type: object
+     *                     properties:
+     *                       id:
+     *                         type: integer
+     *                       nome:
+     *                         type: string
+     *                       horarioInicio:
+     *                         type: string
+     *                         example: "07:00"
+     *                       horarioFim:
+     *                         type: string
+     *                         example: "12:00"
+     *                   aulas:
+     *                     type: array
+     *                     items:
+     *                       type: object
+     *                       properties:
+     *                         id:
+     *                           type: integer
+     *                         nome:
+     *                           type: string
+     *                         objetivosAprendizagem:
+     *                           type: string
+     *                         dataAula:
+     *                           type: string
+     *                           format: date-time
+     *                         isAtivo:
+     *                           type: boolean
+     *                         turmaId:
+     *                           type: integer
+     *                         materiaId:
+     *                           type: integer
+     *                           nullable: true
+     *                   avaliacaos:
+     *                     type: array
+     *                     items:
+     *                       type: object
+     *                       properties:
+     *                         id:
+     *                           type: integer
+     *                         nome:
+     *                           type: string
+     *                         dataAvaliacao:
+     *                           type: string
+     *                           format: date-time
+     *                         tipo:
+     *                           type: string
+     *                         isAtivo:
+     *                           type: boolean
+     *                         turmaId:
+     *                           type: integer
+     *                         materiaId:
+     *                           type: integer
      *       401:
      *         description: Não autorizado
      */
