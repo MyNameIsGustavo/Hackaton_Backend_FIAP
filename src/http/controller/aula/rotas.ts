@@ -82,6 +82,7 @@ export async function aulaRotas(app: Application) {
      *     requestBody:
      *       required: true
      *       content:
+     *         application/json:
      *           example:
      *             nome: "Introdução às Frações"
      *             objetivosAprendizagem: "Compreender o conceito de frações"
@@ -109,26 +110,31 @@ export async function aulaRotas(app: Application) {
      *       - in: path
      *         name: id
      *         required: true
-     *         description: ID da aula
      *         schema:
      *           type: integer
-     *           example: 1
      *     requestBody:
      *       required: true
      *       content:
      *         application/json:
-     *           example:
-     *             nome: "Frações Avançadas"
-     *             objetivosAprendizagem: "Resolver problemas com frações"
-     *             dataAula: "2026-03-22"
-     *             isAtivo: true
-     *             turmaId: 1
-     *             materiaId: 2
+     *           schema:
+     *             type: object
+     *             properties:
+     *               nome:
+     *                 type: string
+     *               objetivosAprendizagem:
+     *                 type: string
+     *               dataAula:
+     *                 type: string
+     *                 format: date
+     *               isAtivo:
+     *                 type: boolean
+     *               turmaId:
+     *                 type: integer
+     *               materiaId:
+     *                 type: integer
      *     responses:
      *       200:
      *         description: Aula atualizada com sucesso
-     *       404:
-     *         description: Aula não encontrada
      */
     app.put("/aula/:id", autenticacaoMiddleware, alterar);
 }
