@@ -48,7 +48,6 @@ export async function aulaRotas(app: Application) {
      *           type: string
      *         required: false
      *         description: Nome da aula para filtro (busca parcial)
-     *
      *       - in: query
      *         name: pagina
      *         schema:
@@ -56,7 +55,6 @@ export async function aulaRotas(app: Application) {
      *           example: 1
      *         required: false
      *         description: Número da página
-     *
      *       - in: query
      *         name: limite
      *         schema:
@@ -64,7 +62,6 @@ export async function aulaRotas(app: Application) {
      *           example: 10
      *         required: false
      *         description: Quantidade de registros por página
-     *
      *       - in: query
      *         name: ordenaPor
      *         schema:
@@ -72,7 +69,6 @@ export async function aulaRotas(app: Application) {
      *           example: nome
      *         required: false
      *         description: Campo para ordenação
-     *
      *       - in: query
      *         name: ordem
      *         schema:
@@ -81,7 +77,6 @@ export async function aulaRotas(app: Application) {
      *           example: asc
      *         required: false
      *         description: Ordem da classificação
-     *
      *     responses:
      *       200:
      *         description: Lista de aulas retornada com sucesso
@@ -102,11 +97,112 @@ export async function aulaRotas(app: Application) {
      *                 dados:
      *                   type: array
      *                   items:
-     *                     $ref: '#/components/schemas/AulaComRelacoes'
-     *
+     *                     type: object
+     *                     properties:
+     *                       id:
+     *                         type: integer
+     *                         example: 1
+     *                       nome:
+     *                         type: string
+     *                         example: "Introdução à Matemática"
+     *                       objetivosAprendizagem:
+     *                         type: string
+     *                         example: "Compreender conceitos básicos de matemática"
+     *                       dataAula:
+     *                         type: string
+     *                         format: date-time
+     *                         example: "2026-03-21T18:46:11.580Z"
+     *                       isAtivo:
+     *                         type: boolean
+     *                         example: true
+     *                       turmaId:
+     *                         type: integer
+     *                         example: 1
+     *                       materiaId:
+     *                         type: integer
+     *                         example: 1
+     *                       planoAula:
+     *                         type: object
+     *                         nullable: true
+     *                       professores:
+     *                         type: array
+     *                         items:
+     *                           type: object
+     *                           properties:
+     *                             id:
+     *                               type: integer
+     *                               example: 1
+     *                             nomeCompleto:
+     *                               type: string
+     *                               example: "Professor Gustavo"
+     *                             email:
+     *                               type: string
+     *                               example: "gustavo.professor@fiap.com.br"
+     *                             telefone:
+     *                               type: string
+     *                               example: "15332234712"
+     *                             dataNascimento:
+     *                               type: string
+     *                               format: date
+     *                               example: "2003-12-03"
+     *                             formacao:
+     *                               type: string
+     *                               example: "Desenvolvedor de sistemas"
+     *                             especialidade:
+     *                               type: string
+     *                               example: "Programação Full Stack"
+     *                             dataCadastro:
+     *                               type: string
+     *                               format: date-time
+     *                               example: "2026-03-21T18:43:45.034Z"
+     *                             isAtivo:
+     *                               type: boolean
+     *                               example: true
+     *                       materia:
+     *                         type: object
+     *                         properties:
+     *                           id:
+     *                             type: integer
+     *                             example: 1
+     *                           nome:
+     *                             type: string
+     *                             example: "Matemática"
+     *                           areaConhecimento:
+     *                             type: string
+     *                             example: "Ciências Exatas"
+     *                           dataCadastro:
+     *                             type: string
+     *                             format: date-time
+     *                             example: "2026-03-21T18:43:45.488Z"
+     *                           isAtivo:
+     *                             type: boolean
+     *                             example: true
+     *                           periodoId:
+     *                             type: integer
+     *                             example: 1
+     *                       turma:
+     *                         type: object
+     *                         properties:
+     *                           id:
+     *                             type: integer
+     *                             example: 1
+     *                           nome:
+     *                             type: string
+     *                             example: "1º Ano A"
+     *                           anoEscolar:
+     *                             type: integer
+     *                             example: 1
+     *                           anoLetivo:
+     *                             type: integer
+     *                             example: 2026
+     *                           isAtivo:
+     *                             type: boolean
+     *                             example: true
+     *                           periodoId:
+     *                             type: integer
+     *                             example: 1
      *       401:
      *         description: Não autorizado
-     *
      *       500:
      *         description: Erro interno do servidor
      */
