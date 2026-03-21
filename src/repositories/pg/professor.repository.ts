@@ -1,16 +1,15 @@
-import { Professor } from "../../entities/professor.entity";
 import { IProfessorRepository } from "../professor.repository.interface";
 import { prisma } from "../../prismaClient";
 import { IProfessor } from "../../entities/interfaces/IProfessor";
 
 export class ProfessorRepository implements IProfessorRepository {
-    async buscarProfessorPorEmail(email: string): Promise<Professor | null> {
+    async buscarProfessorPorEmail(email: string): Promise<IProfessor | null> {
         try {
             const professorExistente = await prisma.professor.findUnique({ where: { email: email } });
 
             if (!professorExistente) throw new Error(`Professor com email ${email} não encontrado.`);
 
-            return professorExistente as Professor;
+            return professorExistente as IProfessor;
         } catch (error) {
             throw new Error(`Erro ao buscar Professor por email: ${error}`);
         }
@@ -37,6 +36,19 @@ export class ProfessorRepository implements IProfessorRepository {
             return professorSelecionado as IProfessor;
         } catch (error) {
             throw new Error(`Erro ao buscar professor por ID: ${error}`);
+        }
+    }
+
+    async deletarProfessor(id: number): Promise<IProfessor | null> {
+        try {
+            const professorSelecionado = await prisma.professor.findUnique({ where: { id: id } });
+
+            if (!professorSelecionado) return null;
+            const professorDeletado = await prisma.professor.update({ data: { isAtivo: false }, where: { id: id } })
+
+            return professorDeletado as IProfessor;
+        } catch (error) {
+            throw new Error(`Erro ao deletar professor: ${error}`);
         }
     }
 }

@@ -6,7 +6,7 @@ export interface IProfessor {
     email: string;
     senha: string;
     telefone: string;
-    idade: number;
+    dataNascimento: Date;
     formacao: string;
     especialidade: string;
     dataCadastro: Date;
@@ -15,4 +15,8 @@ export interface IProfessor {
 
 export interface IProfessorComRelacoes extends IAula {
     aulas: IAula[];
+}
+
+export interface IProfessorComIdade extends IProfessor {
+    idade: number;
 }

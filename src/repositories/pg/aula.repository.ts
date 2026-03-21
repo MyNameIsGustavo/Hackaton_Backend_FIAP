@@ -1,6 +1,6 @@
 import { prisma } from "../../prismaClient";
 import { IAulaRepository } from "../aula.repository.interface";
-import { IAula } from "../../entities/interfaces/IAula";
+import { IAula, IAulaComRelacoes } from "../../entities/interfaces/IAula";
 
 export class AulaRepository implements IAulaRepository {
 
@@ -17,13 +17,37 @@ export class AulaRepository implements IAulaRepository {
         }
     }
 
-    async buscarTodasAulas(): Promise<IAula[] | []> {
+    async buscarTodasAulas(filtro: { nomeAula?: string; pagina?: number; limite?: number; ordenaPor?: string; ordem?: "asc" | "desc"; }): Promise<IAulaComRelacoes[]> {
         try {
-            const aulasExistentes = await prisma.aula.findMany();
+            const pagina = filtro.pagina ?? 1;
+            const limite = filtro.limite ?? 10;
 
-            if (!aulasExistentes) return [];
+            return await prisma.aula.findMany({
+                where: filtro.nomeAula
+                    ? {
+                        nome: {
+                            contains: filtro.nomeAula,
+                            mode: "insensitive"
+                        }
+                    }
+                    : undefined,
 
-            return aulasExistentes as IAula[];
+                orderBy: {
+                    [filtro.ordenaPor ?? "nome"]: filtro.ordem ?? "asc"
+                },
+
+                skip: (pagina - 1) * limite,
+                take: limite,
+
+                include: {
+                    planoAula: true,
+                    professores: true,
+                    materia: true,
+                    turma: true,
+                }
+            });
+
+
         } catch (error) {
             throw new Error(`Erro ao buscar todas aulas: ${error}`);
         }

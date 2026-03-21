@@ -31,21 +31,87 @@ export async function aulaRotas(app: Application) {
      *         description: Aula não encontrada
      */
     app.get("/aulas/:id", autenticacaoMiddleware, buscarPorID);
+
     /**
      * @swagger
      * /aulas:
      *   get:
      *     summary: Buscar todas as aulas
+     *     description: Retorna uma lista paginada de aulas com filtros opcionais
      *     tags: [Aulas]
      *     security:
      *       - bearerAuth: []
+     *     parameters:
+     *       - in: query
+     *         name: aulas
+     *         schema:
+     *           type: string
+     *         required: false
+     *         description: Nome da aula para filtro (busca parcial)
+     *
+     *       - in: query
+     *         name: pagina
+     *         schema:
+     *           type: integer
+     *           example: 1
+     *         required: false
+     *         description: Número da página
+     *
+     *       - in: query
+     *         name: limite
+     *         schema:
+     *           type: integer
+     *           example: 10
+     *         required: false
+     *         description: Quantidade de registros por página
+     *
+     *       - in: query
+     *         name: ordenaPor
+     *         schema:
+     *           type: string
+     *           example: nome
+     *         required: false
+     *         description: Campo para ordenação
+     *
+     *       - in: query
+     *         name: ordem
+     *         schema:
+     *           type: string
+     *           enum: [asc, desc]
+     *           example: asc
+     *         required: false
+     *         description: Ordem da classificação
+     *
      *     responses:
      *       200:
      *         description: Lista de aulas retornada com sucesso
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 pagina:
+     *                   type: integer
+     *                   example: 1
+     *                 limite:
+     *                   type: integer
+     *                   example: 10
+     *                 total:
+     *                   type: integer
+     *                   example: 100
+     *                 dados:
+     *                   type: array
+     *                   items:
+     *                     $ref: '#/components/schemas/AulaComRelacoes'
+     *
      *       401:
      *         description: Não autorizado
+     *
+     *       500:
+     *         description: Erro interno do servidor
      */
     app.get("/aulas", autenticacaoMiddleware, buscarTodos);
+    
     /**
      * @swagger
      * /aula/{id}:

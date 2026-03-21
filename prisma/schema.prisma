@@ -12,7 +12,7 @@ model Professor {
   email         String   @unique
   senha         String
   telefone      String
-  idade         Int
+  dataNascimento DateTime
   formacao      String
   especialidade String
   dataCadastro  DateTime

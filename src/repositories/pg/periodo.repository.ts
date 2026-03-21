@@ -6,8 +6,8 @@ export class PeriodoRepository implements IPeriodoRepository {
 
     async buscarTodosPeriodos(filtro: { nomePeriodo?: string; pagina?: number; limite?: number; ordenaPor?: string; ordem?: "asc" | "desc"; }): Promise<IPeriodoComRelacoes[]> {
         try {
-            const page = filtro.pagina ?? 1;
-            const limit = filtro.limite ?? 10;
+            const pagina = filtro.pagina ?? 1;
+            const limite = filtro.limite ?? 10;
 
             return await prisma.periodo.findMany({
                 where: filtro.nomePeriodo
@@ -23,8 +23,8 @@ export class PeriodoRepository implements IPeriodoRepository {
                     [filtro.ordenaPor ?? "nome"]: filtro.ordem ?? "asc"
                 },
 
-                skip: (page - 1) * limit,
-                take: limit,
+                skip: (pagina - 1) * limite,
+                take: limite,
 
                 include: {
                     turmas: {
