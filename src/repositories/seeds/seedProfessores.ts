@@ -1,14 +1,15 @@
+import { IProfessor } from "../../entities/interfaces/IProfessor";
 import { prisma } from "../../prismaClient";
 import bcrypt from "bcrypt";
 
 export async function seedUsuarios() {
-    const usuarios = [
+    const usuarios: IProfessor[] = [
         {
             nomeCompleto: "Professor Gustavo",
             email: "gustavo.professor@fiap.com.br",
             telefone: "15332234712",
             senha: await bcrypt.hash("docente123", 10),
-            dataNascimento: "12/03/2003",
+            dataNascimento: new Date("12/03/2003"),
             formacao: "Desenvolvedor de sistemas",
             especialidade: "Programação Full Stack",
             dataCadastro: new Date(),
@@ -19,7 +20,7 @@ export async function seedUsuarios() {
             email: "chris.professor@fiap.com.br",
             telefone: "15332234712",
             senha: await bcrypt.hash("docente123", 10),
-            dataNascimento: "12/03/2003",
+            dataNascimento: new Date("12/03/2003"),
             formacao: "Desenvolvedor de sistemas",
             especialidade: "Programação Full Stack",
             dataCadastro: new Date(),
@@ -30,7 +31,7 @@ export async function seedUsuarios() {
             email: "adriano.professor@fiap.com.br",
             telefone: "15332234712",
             senha: await bcrypt.hash("docente123", 10),
-            dataNascimento: "12/03/2003",
+            dataNascimento: new Date("12/03/2003"),
             formacao: "Desenvolvedor de sistemas",
             especialidade: "Programação Full Stack",
             dataCadastro: new Date(),
@@ -41,7 +42,7 @@ export async function seedUsuarios() {
             email: "gisele.professor@fiap.com.br",
             telefone: "15332234712",
             senha: await bcrypt.hash("docente123", 10),
-            dataNascimento: "12/03/2003",
+            dataNascimento: new Date("12/03/2003"),
             formacao: "Desenvolvedora de sistemas",
             especialidade: "Programação Full Stack",
             dataCadastro: new Date(),
