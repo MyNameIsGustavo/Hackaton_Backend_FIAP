@@ -4,6 +4,7 @@ import { buscarPorID } from "./in/buscarPorID";
 import { buscarTodos } from "./in/buscarTodos";
 import { cadastro } from "./in/cadastro";
 import { alterar } from "./in/alterar";
+import { deletar } from "./in/deletar";
 
 export async function materiasRotas(app: Application) {
     /**
@@ -215,4 +216,32 @@ export async function materiasRotas(app: Application) {
      *         description: Não autorizado
      */
     app.put("/materia/:id", autenticacaoMiddleware, alterar);
+
+    /**
+     * @swagger
+     * /materia/{id}:
+     *   delete:
+     *     summary: Deletar uma matéria por ID
+     *     tags: [Materias]
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         description: ID da matéria
+     *         schema:
+     *           type: integer
+     *           example: 1
+     *     responses:
+     *       200:
+     *         description: Matéria deletada com sucesso
+     *       400:
+     *         description: ID inválido
+     *       404:
+     *         description: Matéria não encontrada
+     *       401:
+     *         description: Não autorizado
+     */
+    app.delete("/materia/:id", autenticacaoMiddleware, deletar);
 }

@@ -77,4 +77,17 @@ export class TurmaRepository implements ITurmaRepository {
             throw new Error(`Erro ao buscar turma por ID: ${error}`);
         }
     }
+
+    async deletarTurma(id: number): Promise<ITurma | null> {
+        try {
+            const turmaSelecionada = await prisma.turma.findUnique({ where: { id: id } });
+
+            if (!turmaSelecionada) return null;
+            const turmaDeletada = await prisma.turma.update({ data: { isAtivo: false }, where: { id: id } })
+
+            return turmaDeletada as ITurma;
+        } catch (error) {
+            throw new Error(`Erro ao deletar deletada: ${error}`);
+        }
+    }
 }

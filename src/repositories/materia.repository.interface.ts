@@ -5,4 +5,5 @@ export interface IMateriaRepository {
     buscarTodasMaterias(filtro?: { nomeMateria?: string; pagina?: number; limite?: number; ordenaPor?: string; ordem?: "asc" | "desc"; }): Promise<IMateriaComRelacoes[]>
     buscarMateriaPorID(id: number): Promise<IMateria | null>;
     alterarMateria(dados: Omit<IMateria, "dataCadastro">, id: number): Promise<IMateria | null>;
+    deletarMateria(id: number): Promise<IMateria | null>
 }

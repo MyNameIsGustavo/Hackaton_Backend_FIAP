@@ -80,4 +80,17 @@ export class PeriodoRepository implements IPeriodoRepository {
             throw new Error(`Erro ao buscar periodo por ID: ${error}`);
         }
     }
+
+    async deletarPeriodo(id: number): Promise<IPeriodo | null> {
+        try {
+            const periodoSelecionado = await prisma.periodo.findUnique({ where: { id: id } });
+
+            if (!periodoSelecionado) return null;
+            const periodoDeletado = await prisma.periodo.update({ data: { isAtivo: false }, where: { id: id } })
+
+            return periodoDeletado as IPeriodo;
+        } catch (error) {
+            throw new Error(`Erro ao deletar periodo: ${error}`);
+        }
+    }
 }

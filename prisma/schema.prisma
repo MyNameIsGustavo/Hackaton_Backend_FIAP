@@ -123,10 +123,11 @@ model Turma {
 }
 
 model Periodo {
-  id            Int    @id @default(autoincrement())
+  id            Int     @id @default(autoincrement())
   nome          String
   horarioInicio String
   horarioFim    String
+  isAtivo       Boolean @default(true)
 
   turmas   Turma[]
   materias Materia[]

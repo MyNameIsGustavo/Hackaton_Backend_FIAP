@@ -78,4 +78,17 @@ export class MateriaRepository implements IMateriaRepository {
             throw new Error(`Erro ao buscar materia por ID: ${error}`);
         }
     }
+
+    async deletarMateria(id: number): Promise<IMateria | null> {
+        try {
+            const materiaSelecionada = await prisma.materia.findUnique({ where: { id: id } });
+
+            if (!materiaSelecionada) return null;
+            const materiaDeletada = await prisma.materia.update({ data: { isAtivo: false }, where: { id: id } })
+
+            return materiaDeletada as IMateria;
+        } catch (error) {
+            throw new Error(`Erro ao deletar Materia: ${error}`);
+        }
+    }
 }

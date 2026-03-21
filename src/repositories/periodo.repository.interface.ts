@@ -5,4 +5,5 @@ export interface IPeriodoRepository {
     buscarTodosPeriodos(filtro?: { nomePeriodo?: string }): Promise<IPeriodoComRelacoes[] | []>
     buscarPeriodoPorID(id: number): Promise<IPeriodo | null>;
     alterarPeriodo(dados: IPeriodo, id: number): Promise<IPeriodo | null>;
+    deletarPeriodo(id: number): Promise<IPeriodo | null>
 }

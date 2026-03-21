@@ -4,6 +4,7 @@ import { buscarTodos } from "./in/buscarTodos";
 import { cadastro } from "./in/cadastro";
 import { alterar } from "./in/alterar";
 import { autenticacaoMiddleware } from "../../../middleware/autenticacao-middleware";
+import { deletar } from "./in/deletar";
 
 export async function turmaRotas(app: Application) {
     /**
@@ -223,4 +224,32 @@ export async function turmaRotas(app: Application) {
      *         description: Não autorizado
      */
     app.put("/turma/:id", autenticacaoMiddleware, alterar);
+
+    /**
+     * @swagger
+     * /turma/{id}:
+     *   delete:
+     *     summary: Deletar uma turma por ID
+     *     tags: [Turmas]
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         description: ID da turma
+     *         schema:
+     *           type: integer
+     *           example: 1
+     *     responses:
+     *       200:
+     *         description: turma deletada com sucesso
+     *       400:
+     *         description: ID inválido
+     *       404:
+     *         description: turma não encontrada
+     *       401:
+     *         description: Não autorizado
+     */
+    app.delete("/turma/:id", autenticacaoMiddleware, deletar)
 }

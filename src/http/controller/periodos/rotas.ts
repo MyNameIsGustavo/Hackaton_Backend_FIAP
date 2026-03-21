@@ -4,6 +4,7 @@ import { buscarPorID } from "./in/buscarPorID";
 import { cadastro } from "./in/cadastrar";
 import { alterar } from "./in/alterar";
 import { autenticacaoMiddleware } from "../../../middleware/autenticacao-middleware";
+import { deletar } from "./in/deletar";
 
 export async function periodosRotas(app: Application) {
     /**
@@ -99,7 +100,7 @@ export async function periodosRotas(app: Application) {
      *                           type: string
      */
     app.get("/periodos", autenticacaoMiddleware, buscarTodos)
-    
+
     /**
      * @swagger
      * /periodo/{id}:
@@ -226,4 +227,33 @@ export async function periodosRotas(app: Application) {
      *         description: Período não encontrado
      */
     app.put("/periodo/:id", autenticacaoMiddleware, alterar)
+
+
+    /**
+     * @swagger
+     * /periodo/{id}:
+     *   delete:
+     *     summary: Deletar uma periodo por ID
+     *     tags: [Períodos]
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         description: ID da periodo
+     *         schema:
+     *           type: integer
+     *           example: 1
+     *     responses:
+     *       200:
+     *         description: periodo deletada com sucesso
+     *       400:
+     *         description: ID inválido
+     *       404:
+     *         description: periodo não encontrada
+     *       401:
+     *         description: Não autorizado
+     */
+    app.delete("/periodo/:id", autenticacaoMiddleware, deletar)
 }
