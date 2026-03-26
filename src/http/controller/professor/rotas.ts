@@ -5,6 +5,7 @@ import { buscarPorID } from "./in/buscarPorID";
 import { buscarPorEmail } from "./in/buscarPorEmail";
 import { buscarInformacoes } from "./in/buscarInformacoes";
 import { autenticacaoMiddleware } from "../../../middleware/autenticacao-middleware";
+import { deletar } from "./in/deletar";
 
 export async function professorRotas(app: Application) {
     /**
@@ -64,7 +65,7 @@ export async function professorRotas(app: Application) {
      *               - email
      *               - senha
      *               - telefone
-     *               - idade
+     *               - dataNascimento
      *               - formacao
      *               - especialidade
      *               - isAtivo
@@ -80,9 +81,8 @@ export async function professorRotas(app: Application) {
      *               telefone:
      *                 type: string
      *                 description: Número com DDD, 11 dígitos
-     *               idade:
-     *                 type: integer
-     *                 minimum: 18
+     *               dataNascimento:
+     *                 type: Date
      *               formacao:
      *                 type: string
      *               especialidade:
@@ -122,6 +122,7 @@ export async function professorRotas(app: Application) {
      *         description: Professor não encontrado
      */
     app.get("/professor/:id", autenticacaoMiddleware, buscarPorID)
+
     /**
      * @swagger
      * /professor/email/{email}:
@@ -188,4 +189,32 @@ export async function professorRotas(app: Application) {
      *         description: Não autorizado
      */
     app.get("/professor", autenticacaoMiddleware, buscarInformacoes)
+
+    /**
+     * @swagger
+     * /professor/{id}:
+     *   delete:
+     *     summary: Deletar uma professor por ID
+     *     tags: [Professores]
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         description: ID da professor
+     *         schema:
+     *           type: integer
+     *           example: 1
+     *     responses:
+     *       200:
+     *         description: professor deletada com sucesso
+     *       400:
+     *         description: ID inválido
+     *       404:
+     *         description: professor não encontrada
+     *       401:
+     *         description: Não autorizado
+     */
+    app.delete("/professor/:id", autenticacaoMiddleware, deletar)
 }

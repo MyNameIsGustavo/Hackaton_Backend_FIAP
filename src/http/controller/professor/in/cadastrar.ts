@@ -9,7 +9,7 @@ export async function cadastro(request: Request, response: Response) {
             email: z.string().email("Deve ser um e-mail válido"),
             senha: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
             telefone: z.string().length(11, "O telefone deve ter exatamente 11 caracteres"),
-            idade: z.number().min(18, "O professor deve ter mínimo 18 anos"),
+            dataNascimento: z.date().min(18, "O professor deve ter mínimo 18 anos"),
             formacao: z.string().min(3, "A formação deve ter no mínimo 3 caracteres"),
             especialidade: z.string().min(3, "A especialidade deve ter no mínimo 3 caracteres"),
             isAtivo: z.boolean(),

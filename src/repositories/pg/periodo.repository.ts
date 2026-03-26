@@ -1,18 +1,42 @@
 import { prisma } from "../../prismaClient";
 import { IPeriodoRepository } from "../periodo.repository.interface";
-import { IPeriodo } from "../../entities/interfaces/IPeriodo";
+import { IPeriodo, IPeriodoComRelacoes } from "../../entities/interfaces/IPeriodo";
 
 export class PeriodoRepository implements IPeriodoRepository {
 
-    async buscarTodosPeriodos(): Promise<IPeriodo[] | []> {
+    async buscarTodosPeriodos(filtro: { nomePeriodo?: string; pagina?: number; limite?: number; ordenaPor?: string; ordem?: "asc" | "desc"; }): Promise<IPeriodoComRelacoes[]> {
         try {
-            const periodosExistente = await prisma.periodo.findMany();
+            const pagina = filtro.pagina ?? 1;
+            const limite = filtro.limite ?? 10;
 
-            if (!periodosExistente) return [];
+            return await prisma.periodo.findMany({
+                where: filtro.nomePeriodo
+                    ? {
+                        nome: {
+                            contains: filtro.nomePeriodo,
+                            mode: "insensitive"
+                        }
+                    }
+                    : undefined,
 
-            return periodosExistente as IPeriodo[];
+                orderBy: {
+                    [filtro.ordenaPor ?? "nome"]: filtro.ordem ?? "asc"
+                },
+
+                skip: (pagina - 1) * limite,
+                take: limite,
+
+                include: {
+                    turmas: {
+                        where: { isAtivo: true }
+                    },
+                    materias: {
+                        where: { isAtivo: true }
+                    }
+                }
+            });
         } catch (error) {
-            throw new Error(`Erro ao buscar Professor por email: ${error}`);
+            throw new Error(`Erro ao buscar períodos: ${error}`);
         }
     }
 
@@ -54,6 +78,19 @@ export class PeriodoRepository implements IPeriodoRepository {
             return periodoAlterado as IPeriodo;
         } catch (error) {
             throw new Error(`Erro ao buscar periodo por ID: ${error}`);
+        }
+    }
+
+    async deletarPeriodo(id: number): Promise<IPeriodo | null> {
+        try {
+            const periodoSelecionado = await prisma.periodo.findUnique({ where: { id: id } });
+
+            if (!periodoSelecionado) return null;
+            const periodoDeletado = await prisma.periodo.update({ data: { isAtivo: false }, where: { id: id } })
+
+            return periodoDeletado as IPeriodo;
+        } catch (error) {
+            throw new Error(`Erro ao deletar periodo: ${error}`);
         }
     }
 }

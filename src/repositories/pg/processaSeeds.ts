@@ -1,3 +1,4 @@
+import { seedAulas } from "../seeds/seedAula";
 import { seedMaterias } from "../seeds/seedMaterias";
 import { seedPeriodos } from "../seeds/seedPeriodos";
 import { seedUsuarios } from "../seeds/seedProfessores";
@@ -10,5 +11,5 @@ export async function processaSeeds() {
     await seedTurmas();
     await seedMaterias();
     await seedBncc();
-    console.log("Todos os seeds finalizados com sucesso!");
+    await seedAulas();
 }
