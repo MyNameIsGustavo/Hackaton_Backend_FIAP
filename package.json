@@ -7,6 +7,7 @@
     "start": "NODE_ENV=PRODUCAO node dist/index.js",
     "dev": "NODE_ENV=DESENVOLVIMENTO ts-node-dev src/index.ts",
     "build": "prisma generate && tsc",
+    "studio": "DB_CONNECTION=postgresql://administrador:jUhpo6PTsvR9BstI4rNvCT9vbLmzQ9Sy@localhost:5432/db_hackaton npx prisma studio",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -26,6 +27,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "@types/cors": "^2.8.19",

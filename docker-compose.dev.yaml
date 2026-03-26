@@ -4,6 +4,9 @@ services:
   backend_hackaton:
     build: .
     container_name: backend_hackaton
+    dns: # ADICIONE ESTAS DUAS LINHAS
+      - 8.8.8.8
+      - 1.1.1.1
     env_file:
       - .env.dev
     environment:

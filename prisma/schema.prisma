@@ -49,6 +49,8 @@ model PlanoAula {
   dataCadastro      DateTime
 
   habilidadesBNCC HabilidadeBNCC[]
+
+  atividadeComplementars AtividadeComplementar[]
 }
 
 model Avaliacao {
@@ -144,4 +146,33 @@ model Aula {
   planoAula             PlanoAula?
   materia               Materia?    @relation(fields: [materiaId], references: [id])
   materiaId             Int?
+
+  conversaAgentes ConversaAgente[]
+}
+
+model ConversaAgente {
+  id        Int              @id @default(autoincrement())
+  aulaId    Int              @unique
+  aula      Aula             @relation(fields: [aulaId], references: [id], onDelete: Cascade)
+  mensagens MensagemAgente[]
+  criadoEm  DateTime         @default(now())
+}
+
+model MensagemAgente {
+  id         Int            @id @default(autoincrement())
+  conversaId Int
+  conversa   ConversaAgente @relation(fields: [conversaId], references: [id], onDelete: Cascade)
+  role       String         // 'user' ou 'assistant'
+  conteudo   String
+  criadoEm   DateTime       @default(now())
+}
+
+model AtividadeComplementar {
+  id          Int       @id @default(autoincrement())
+  planoAulaId Int
+  planoAula   PlanoAula @relation(fields: [planoAulaId], references: [id], onDelete: Cascade)
+  titulo      String
+  descricao   String
+  tipo        String    
+  criadoEm    DateTime  @default(now())
 }

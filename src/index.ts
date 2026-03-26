@@ -7,6 +7,8 @@ import { app } from "./servidor";
 import { configuracaoSwagger } from "./swagger";
 import { turmaRotas } from "./http/controller/turma/rotas";
 import { aulaRotas } from "./http/controller/aula/rotas";
+import { chronosRotas } from "./http/controller/chronos/rotas";
+import { habilidadeRotas} from "./http/controller/habilidade/rotas"
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -23,6 +25,8 @@ async function appHackatonFIAP() {
     await materiasRotas(app);
     await turmaRotas(app);
     await aulaRotas(app);
+    await chronosRotas(app);
+    await habilidadeRotas(app);
     configuracaoSwagger(app);
 }
 
