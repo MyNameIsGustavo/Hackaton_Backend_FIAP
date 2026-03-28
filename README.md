@@ -73,6 +73,20 @@ O projeto de desenvolvimento no segmento de back-end foi idealizado utilizando a
     - Deletar: Remover uma aula do sistema, garantindo que não haja inconsistências nos dados de turmas e professores.
     - Editar: Alterar informações de uma aula já cadastrada, como data, horário, plano de aula ou professor responsável.
 
+6. Entidade Planos de aulas
+    - Cadastrar plano de aula: Gerar plano de aula com base nas habilidades BNCC e tema
+    - Listar planos de aulas: Buscar todos os planos de aulas gerados.
+
+7. Entidade AGENTE Chronos
+    - Enviar mensagem: Enviar mensagem para o Agente Chronos e receber uma resposta do agente.
+    - Buscar historico: Buscar histórico de conversas para uma aula gerada especifíca.
+    - Gerar atividade: Gerar atividade complementar com IA baseada na BNCC.
+    - Listar atividades: Listar atividades complementares de um plano de aula especifico.
+
+8. Entidade Habilidades BNCC
+    - Habilidades BNCC: Obter filtros (materias e anos) para seleção da BNCC
+    - Habilidades: Listar habilidades filtradas para seleção do professor.
+
 ## Configuração de ambiente
 
 Recomenda-se que os pré-requisitos de instalação de tecnologia em seu ambiente de execução sejam os seguintes, listados abaixo. Após verificar as tecnologicas instaladas, siga o procedimento em seguida para inicializar o projeto.
@@ -94,9 +108,253 @@ Recomenda-se que os pré-requisitos de instalação de tecnologia em seu ambient
 6. Com o Docker configurado em seu ambiente e localizado dentro do diretório do projeto, forneça o seguinte comando para iniciar a aplicação Docker localmente, este comando deve instalar todas dependências do projeto conforme a instrução no arquivo dockerfile: docker compose -f docker-compose.dev.yaml --env-file .env.dev up
 
 ## Fluxograma  
+
+Esse diagrama detalha o funcionamento interno da aplicação Chronos, mostrando o caminho de uma requisição.
+
+- Client/HTTP → Pode ser Postman, browser ou frontend, que inicia a requisição.
+- Controller/HTTP → Camada que recebe a requisição, aplica middlewares e prepara a resposta.
+- Aplica caso de uso → Onde a regra de negócio correspondente à requisição é acionada.
+- Lógica de negócios → Coordena regras específicas e interações entre os repositórios.
+- Persiste dados → Parte responsável por salvar ou atualizar informações no banco.
+- Repositórios → Comunicação direta com o PostgreSQL e suporte via PgAdmin.
+
+Além disso, o diagrama destaca as tecnologias/ferramentas usadas em cada etapa: Express, Swagger, Prometheus, Grafana, ZOD (camada de controller e monitoramento), JWT, Bcrypt (na lógica de negócios), PostgreSQL e PgAdmin (persistência de dados).
+
+(IMAGEM DO FLUXO DA APLICAÇÃO)
+
 ## Prova de conceito
+
+Conforme o descritivo do Hackathon da Pós-Tech em Full Stack Development, o desafio consiste em propor soluções práticas e inovadoras que melhorem o dia a dia de professores e professoras. Atendendo a esses requisitos, foi desenvolvida uma API que centraliza e automatiza o fluxo de trabalho docente, reduzindo tarefas manuais e otimizando o planejamento pedagógico.
+
+A solução contempla entidades essenciais como Professor, Período, Turmas, Matérias e Aulas, permitindo desde a autenticação e gestão de professores até a organização completa do calendário acadêmico e das atividades em sala. Com isso, o professor consegue estruturar suas turmas, disciplinas e aulas de forma integrada e eficiente.
+
+Como diferencial, a funcionalidade de Planos de Aula possibilita a geração automatizada de conteúdos com base na BNCC, enquanto o Agente Chronos utiliza inteligência artificial (Gemini - Google) para apoiar o professor com sugestões, geração de atividades e histórico contextualizado por aula.
+
+Dessa forma, a proposta atende diretamente aos requisitos do hackathon ao oferecer uma solução unificada, prática e inovadora, que melhora a produtividade do professor e garante maior alinhamento pedagógico.
+
+###  Requisitos técnicos
+
+O projeto foi desenvolvido com base nos aprendizados ao longo da Pós-Tech em Full Stack Development, atendendo às diretrizes do hackathon por meio de uma arquitetura robusta, testável e escalável.
+
+No back-end, a aplicação foi implementada utilizando Node.js com TypeScript. O servidor foi estruturado com o uso do Express para gerenciamento de rotas e middlewares, garantindo organização e clareza na definição dos endpoints.
+
+Para persistência de dados, foi utilizado o banco relacional PostgreSQL, com uma instância em nuvem na Render para deploy e outra local para testes. A modelagem dos dados foi realizada de forma consistente com o uso do Prisma, assegurando integridade e facilidade na manipulação das entidades do sistema.
+
+A aplicação foi containerizada com Docker, utilizando Dockerfile e Docker Compose, garantindo padronização de ambiente e facilidade de execução em diferentes contextos. A validação de dados foi realizada com o Zod, assegurando maior confiabilidade nas entradas da aplicação.
+
+Por fim, o projeto também integra recursos de inteligência artificial com o uso do Gemini, reforçando a proposta inovadora do hackathon ao apoiar a geração de conteúdos pedagógicos de forma automatizada.
+
+###  Requisitos funcionais
+
+### Seeds
+
+Para padronizar e facilitar a execução dos testes, foram criados seeds no banco de dados com dados iniciais essenciais para validação das funcionalidades do sistema. Esses seeds contemplam as principais entidades da aplicação:
+
+- Usuários (professores)
+- Períodos
+- Turmas
+- Matérias
+- Habilidades BNCC
+- Aulas
+
+Essa abordagem garante um ambiente consistente para testes e validação das regras de negócio.
+A documentação completa da API pode ser acessada via Swagger: https://chronos-latest.onrender.com/api-docs/
+
+### Endpoints da entidade Aulas
+
+- GET /aulas/{id} – Buscar aula por ID
+Permite recuperar os detalhes completos de uma aula específica.
+
+- GET /aulas – Buscar todas as aulas
+Retorna a listagem de todas as aulas cadastradas.
+
+- POST /aula – Cadastrar nova aula
+Permite criar uma nova aula associando turma, matéria, professor e período.
+
+- PUT /aula/{id} – Atualizar aula
+Atualiza informações de uma aula existente.
+
+- DELETE /aula/{id} – Deletar aula por ID
+Remove uma aula do sistema.
+
+### Endpoints de Planos de Aula
+
+- POST /chronos/gerar-plano – Gerar plano de aula
+Gera automaticamente um plano de aula com base na habilidade BNCC e no tema informado.
+
+- GET /chronos/planos – Listar planos de aula
+Retorna todos os planos de aula gerados.
+
+### Endpoints do Agente Chronos
+
+- POST /chronos/conversar – Enviar mensagem para IA
+Permite interação com o agente para suporte pedagógico.
+
+- GET /chronos/conversar/{aulaId} – Histórico de conversa
+Retorna o histórico de interações vinculadas a uma aula.
+
+- POST /chronos/gerar-atividade – Gerar atividade complementar
+Gera atividades com base na BNCC utilizando inteligência artificial.
+
+- GET /chronos/atividades/{aulaId} – Listar atividades
+Lista atividades complementares associadas a um plano de aula.
+
+### Endpoints de Habilidades BNCC
+
+- GET /habilidades/filtros – Obter filtros
+Retorna opções de matérias e anos para seleção.
+
+- GET /habilidades – Listar habilidades
+Lista habilidades da BNCC com base nos filtros aplicados.
+
+### Endpoints de Matérias
+
+- GET /materias/{id} – Buscar matéria por ID
+
+- GET /materias – Buscar todas as matérias
+
+- POST /materia – Cadastrar nova matéria
+
+- PUT /materia/{id} – Atualizar matéria
+
+- DELETE /materia/{id} – Deletar matéria
+
+### Endpoints de Períodos
+
+- GET /periodos – Buscar todos os períodos
+
+- GET /periodo/{id} – Buscar período por ID
+
+- POST /periodo – Cadastrar período
+
+- PUT /periodo/{id} – Atualizar período
+
+- DELETE /periodo/{id} – Deletar período
+
+### Endpoints de Professores
+
+- POST /login – Autenticação do professor
+
+- POST /professor/cadastro – Cadastro de professor
+
+- GET /professor/{id} – Buscar professor por ID
+
+- GET /professor/email/{email} – Buscar por email
+
+- GET /professor – Dados do usuário logado
+
+- DELETE /professor/{id} – Deletar professor
+
+### Endpoints de Turmas
+
+- GET /turmas/{id} – Buscar turma por ID
+
+- GET /turmas – Buscar todas as turmas
+
+- POST /turmas – Cadastrar turma
+
+- PUT /turma/{id} – Atualizar turma
+
+- DELETE /turma/{id} – Deletar turma
+
+Dessa forma, os requisitos funcionais atendem integralmente à proposta do projeto, cobrindo desde a estruturação acadêmica até o uso de inteligência artificial no apoio ao professor, garantindo uma solução completa, integrada e validável.
+
 ## Estrutura da aplicação 
+
+### Banco de dados - Modelo de Entidade-Relacionamento.
+
+A seguir, é apresentado o Modelo de Entidade-Relacionamento (MER) do sistema, gerado por meio do Prisma Studio e estruturado a partir dos schemas definidos no Prisma. Esse modelo representa a base da arquitetura de dados da aplicação, descrevendo de forma clara as entidades, seus atributos e os relacionamentos existentes entre elas.
+
+Além disso, o MER estabelece a organização e o fluxo das informações dentro do sistema, servindo como referência para a implementação das regras de negócio e garantindo consistência, integridade e escalabilidade dos dados ao longo do desenvolvimento realizado no hackathon.
+
+(IMAGEM DO MER)
+
+### Fluxo de análise de dados até o core da aplicação (Gemini - Google).
+
+(IMAGEM DO FLUXO GEMINI)
+
+### Estrutura da aplicação de desenvolvimento.
+
+1. Entities
+- Caminho: src/entities/
+- Responsabilidade: Define de forma abstrata os atributos de cada entidade do sistema.
+
+2. Interfaces
+- Caminho: src/entities/interfaces/
+- Responsabilidade: Definir contratos a serem honrados com bases nas entidades do sistema.
+
+3. Controller/http
+- Caminho: src/controllers/http/
+- Responsabilidade: Enviar e receber requisições HTTP, tratando apenas requisição e resposta e retornando o status code adequado.
+
+4. lib/pg
+- Caminho: src/lib/pg/
+- Responsabilidade: Configurar e fornecer a conexão com o banco de dados PostgreSQL.
+
+5. Middleware
+- Caminho: src/middleware/
+- Responsabilidade: Interceptar requisições para validações ou tratamentos específicos entre requisição e resposta.
+
+6. Repositories
+- Caminho: src/repositories/
+- Responsabilidade: Persistência de dados no banco de dados, sem lógica de negócio.
+
+7. Use-cases
+- Caminho: src/use-cases/
+- Responsabilidade: Aplicar a lógica de negócio e coordenar interações entre camadas, utilizando Factory Pattern quando necessário.
+
+8. app.ts
+- Responsabilidade: Arquivo de entrada da aplicação, inicializando o app.
+
+9. prismaClient.ts
+- Responsabilidade: Arquivo de configuração do prisma com o banco de dados Postgres.
+
+10. servidor.ts
+- Responsabilidade: Configurar e iniciar o servidor HTTP utilizando Express.
+
+11. Swagger.ts
+- Caminho: src/swagger.ts
+- Responsabilidade: Configurar o ambiente para utilização do Swagger.
+
+12. prisma/schema.prisma
+- Caminho: prisma/schema.prisma
+- Responsabilidade: Definir modelos e tabelas do banco de dados PostgreSQL.
+
+13. node_modules/
+- Pasta: node_modules	
+- Responsabilidade: Armazena bibliotecas externas
+
+14. docker-compose.dev.yaml
+- Arquivo: docker-compose.dev.yaml
+- Responsabilidade: Orquestração de containers da aplicação de desenvolvimento
+
+15. docker-compose.prod.yaml
+- Arquivo: docker-compose.pord.yaml
+- Responsabilidade: Orquestração de containers da aplicação de produção
+
+16. dockerfile
+- Arquivo: Dockerfile	
+- Responsabilidade: Arquivo de entrada para container Docker
+
+18. package.json
+- Arquivo: package.json	
+- Responsabilidade: Gerenciamento de dependências e scripts
+
+19. package-lock.json
+- Arquivo: package-lock.json	
+- Responsabilidade: Registro das versões instaladas
+
+20. tsconfig.json
+- Arquivo: tsconfig.json	
+- Responsabilidade: Configuração do TypeScript
+
 ## Processo de Desenvolvimento  
+
 ## Relatos dos Desafios Superados  
+
+- Carlos Adriano - RM366258:
+- ⁠Gustavo Rocha - RM365401:
+
 ## Entregas  
+
 ## Conclusão
