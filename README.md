@@ -120,7 +120,7 @@ Esse diagrama detalha o funcionamento interno da aplicação Chronos, mostrando 
 
 Além disso, o diagrama destaca as tecnologias/ferramentas usadas em cada etapa: Express, Swagger, Prometheus, Grafana, ZOD (camada de controller e monitoramento), JWT, Bcrypt (na lógica de negócios), PostgreSQL e PgAdmin (persistência de dados).
 
-(IMAGEM DO FLUXO DA APLICAÇÃO)
+<img width="1797" height="387" alt="Captura de tela 2026-03-28 164439" src="https://github.com/user-attachments/assets/0216a689-94ab-4dcf-aaea-d731d3ccff4a" />
 
 ## Prova de conceito
 
@@ -267,7 +267,7 @@ A seguir, é apresentado o Modelo de Entidade-Relacionamento (MER) do sistema, g
 
 Além disso, o MER estabelece a organização e o fluxo das informações dentro do sistema, servindo como referência para a implementação das regras de negócio e garantindo consistência, integridade e escalabilidade dos dados ao longo do desenvolvimento realizado no hackathon.
 
-(IMAGEM DO MER)
+<img width="1712" height="868" alt="Captura de tela 2026-03-28 175510" src="https://github.com/user-attachments/assets/764cda71-36b1-4066-9c7c-7cfe235e88b5" />
 
 ### Fluxo de análise de dados até o core da aplicação (Gemini - Google).
 
