@@ -1,11 +1,12 @@
 import { Application } from "express";
 import { autenticacaoMiddleware } from "../../../middleware/autenticacao-middleware";
 import { gerarPlano } from "./in/gerarPlano";
-import { buscarTodos } from "./in/buscarTodos"; // Importe o novo controller
-import { conversar } from "./in/conversar"; // Importe o controller de conversar
+import { buscarTodos } from "./in/buscarTodos"; 
+import { conversar } from "./in/conversar"; 
 import { buscarHistorico } from "./in/buscarHistorico";
 import { gerarAtividade } from "./in/gerarAtividade";
 import { buscarAtividades } from "./in/buscarAtividades";
+import { buscarTodasConversas } from "./in/buscarTodasConversas";
 
 export async function chronosRotas(app: Application) {
     /**
@@ -194,4 +195,38 @@ export async function chronosRotas(app: Application) {
      *         description: Erro interno do servidor
      */
     app.get("/chronos/atividades/:aulaId", autenticacaoMiddleware, buscarAtividades);
+
+    /**
+     * @swagger
+     * /chronos/conversas:
+     *   get:
+     *     summary: Buscar todo o histórico de conversas do professor
+     *     description: Retorna o histórico completo de conversas do professor, agrupadas por aula.
+     *     tags: [Agente Chronos]
+     *     security:
+     *       - bearerAuth: []
+     *     responses:
+     *       200:
+     *         description: Lista de conversas vinculadas ao professor agrupadas por aula
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 type: object
+     *                 properties:
+     *                   aulaId:
+     *                     type: string
+     *                     example: "aula-123"
+     *                   tituloAula:
+     *                     type: string
+     *                     example: "Matemática - Equações do 2º grau"
+     *                   conversas:
+     *                     type: array
+     *                     items:
+     *                       $ref: '#/components/schemas/Conversa'
+     *       500:
+     *         description: Erro interno do servidor
+     */
+    app.get("/chronos/conversas", autenticacaoMiddleware, buscarTodasConversas);
 }

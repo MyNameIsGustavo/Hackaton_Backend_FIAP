@@ -33,4 +33,28 @@ export class ChatRepository {
             select: { role: true, conteudo: true }
         });
     }
+
+    async buscarTodasConversasPorProfessor(professorId: number) {
+        return await prisma.conversaAgente.findMany({
+            where: {
+                aula: {
+                    professores: {
+                        some: { id: professorId }
+                    }
+                }
+            },
+            include: {
+                aula: {
+                    select: { 
+                        nome: true, 
+                        turma: { select: { nome: true } } 
+                    }
+                },
+                mensagens: {
+                    orderBy: { criadoEm: 'asc' }
+                }
+            },
+            orderBy: { criadoEm: 'desc' }
+        });
+    }
 }
