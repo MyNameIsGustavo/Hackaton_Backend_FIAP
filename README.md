@@ -352,8 +352,16 @@ Além disso, o MER estabelece a organização e o fluxo das informações dentro
 
 ## Relatos dos Desafios Superados  
 
-- Carlos Adriano - RM366258:
-- ⁠Gustavo Rocha - RM365401:
+- Carlos Adriano - RM366258: 
+- ⁠Gustavo Rocha - RM365401: 
+
+Desde o início do desenvolvimento do projeto do hackathon da última fase da Pós-Tech da FIAP, enfrentei algumas situações inéditas, especialmente no contexto de trabalho em grupo para a construção de um MVP. Durante a minha graduação, não tive a oportunidade de participar de um projeto com essas características, o que tornou essa experiência ainda mais diferente.
+
+A construção de um MVP envolve muito mais do que apenas o desenvolvimento de um software funcional. Trata-se de uma experiência completa, que inclui aspectos como usabilidade, resolução de problemas reais e geração de valor por meio da tecnologia. Esse processo contribuiu significativamente para o meu aprendizado ao longo da fase.
+
+Em relação às tecnologias utilizadas, optamos por trabalhar exclusivamente com as stacks abordadas durante a Pós-Tech, como forma de consolidar o conhecimento adquirido. No back-end, foram utilizados Node.js, Docker e PostgreSQL. O resultado final do projeto trouxe grande satisfação para toda a equipe, uma vez que conseguimos entregar todas as funcionalidades inicialmente planejadas, além de incorporar novas features ao longo do desenvolvimento.
+
+Por fim, outro ponto de destaque foi o aprendizado relacionado às regras de negócio. Até então, eu não havia tido um contato aprofundado com esse tipo de análise fora do ambiente acadêmico da Pós-Tech. Por isso, considero que esse foi um dos principais desafios superados durante toda a jornada.
 
 ## Entregas  
 
