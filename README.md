@@ -9,10 +9,11 @@
 6. Prova de conceito
 7. Configuração de ambiente
 8. Estrutura da aplicação 
-9. Processo de Desenvolvimento  
-10. Relatos dos Desafios Superados  
-11. Entregas  
-14. Conclusão
+9. Processo de Desenvolvimento
+10. Testes
+11. Relatos dos Desafios Superados  
+12. Entregas  
+13. Conclusão
 
 ## Membros do grupo 25 
 - Carlos Adriano - RM366258
@@ -97,7 +98,7 @@ Recomenda-se que os pré-requisitos de instalação de tecnologia em seu ambient
 
 1. Clonar o repositório disponível no GitHub através do link: https://github.com/MyNameIsGustavo/Hackaton_Backend_FIAP
 
-2. Criar um arquivo ".env" e um ".env.dev" na raiz do projeto e preencher as chaves conforme ".envExemplo" já disponibilizado originalmente no projeto. Por se tratar de um projeto acadêmico, portanto, as variáveis do arquivo ".env.local" serão compartilhadas para fins explicativos e didaticos.
+2. Criar os arquivos `.env` e `.env.dev` na raiz do projeto.
 
 3. Criar um arquivo ".gitignore" na raiz do projeto, incluindo: .env, .env.dev, .env.*, node_modules, dist e /src/generated/prisma
 
@@ -106,6 +107,31 @@ Recomenda-se que os pré-requisitos de instalação de tecnologia em seu ambient
 5. Para replicação completa do ambiente no qual foi desenvolvido o projeto, instale o WSL com a distribuição Ubuntu. Para mais instruções siga está documentação oficial distribuida pela Microsoft: https://learn.microsoft.com/pt-br/windows/wsl/install
 
 6. Com o Docker configurado em seu ambiente e localizado dentro do diretório do projeto, forneça o seguinte comando para iniciar a aplicação Docker localmente, este comando deve instalar todas dependências do projeto conforme a instrução no arquivo dockerfile: docker compose -f docker-compose.dev.yaml --env-file .env.dev up
+
+### Variáveis de ambiente obrigatórias
+
+| Variável | Descrição |
+|---|---|
+| `NODE_ENV` | Ambiente da aplicação (`DESENVOLVIMENTO` ou `PRODUCAO`) |
+| `PORT_APP` | Porta de execução da API |
+| `DB_CONNECTION` | String de conexão PostgreSQL usada por Prisma/pg |
+| `SECRET_KEY` | Chave secreta para assinatura/verificação de JWT |
+| `BCRYPT_SALT_ROUNDS` | Fator de hash do bcrypt |
+| `GEMINI_API_KEY` | Chave de API do Gemini para funcionalidades do Chronos |
+
+### Rodando sem Docker (local)
+
+```bash
+npm install
+npm run dev
+```
+
+Para build e execução em modo produção:
+
+```bash
+npm run build
+npm start
+```
 
 ## Fluxograma  
 
@@ -118,7 +144,7 @@ Esse diagrama detalha o funcionamento interno da aplicação Chronos, mostrando 
 - Persiste dados → Parte responsável por salvar ou atualizar informações no banco.
 - Repositórios → Comunicação direta com o PostgreSQL e suporte via PgAdmin.
 
-Além disso, o diagrama destaca as tecnologias/ferramentas usadas em cada etapa: Express, Swagger, Prometheus, Grafana, ZOD (camada de controller e monitoramento), JWT, Bcrypt (na lógica de negócios), PostgreSQL e PgAdmin (persistência de dados).
+Além disso, o diagrama destaca as tecnologias/ferramentas usadas em cada etapa: Express, Swagger, Zod (camada de validação), JWT, Bcrypt (na lógica de autenticação), PostgreSQL e PgAdmin (persistência de dados).
 
 <img width="1797" height="387" alt="Captura de tela 2026-03-28 164439" src="https://github.com/user-attachments/assets/0216a689-94ab-4dcf-aaea-d731d3ccff4a" />
 
@@ -158,7 +184,21 @@ Para padronizar e facilitar a execução dos testes, foram criados seeds no banc
 - Aulas
 
 Essa abordagem garante um ambiente consistente para testes e validação das regras de negócio.
-A documentação completa da API pode ser acessada via Swagger: https://chronos-latest.onrender.com/api-docs/
+A documentação completa da API pode ser acessada via Swagger em:
+
+- Local: `http://localhost:9090/api-docs`
+- Produção: `https://hackaton-backend-fiap.onrender.com/api-docs`
+
+### Autenticação
+
+- O endpoint de login é `POST /login` e retorna um token JWT.
+- Todos os demais endpoints protegidos exigem header: `Authorization: Bearer <token>`.
+
+### Paginação e filtros (resumo)
+
+- Entidades com listagem paginada usam parâmetros como `pagina` e `limite`.
+- Alguns endpoints aceitam ordenação com `ordenaPor` e `ordem`.
+- Habilidades BNCC aceitam filtros por `materia`/`materiaId` e `ano`/`anoEscolar`.
 
 ### Endpoints da entidade Aulas
 
@@ -192,6 +232,9 @@ Permite interação com o agente para suporte pedagógico.
 
 - GET /chronos/conversar/{aulaId} – Histórico de conversa
 Retorna o histórico de interações vinculadas a uma aula.
+
+- GET /chronos/conversas – Histórico completo do professor
+Retorna todas as conversas do professor autenticado, agrupadas por aula.
 
 - POST /chronos/gerar-atividade – Gerar atividade complementar
 Gera atividades com base na BNCC utilizando inteligência artificial.
@@ -271,7 +314,7 @@ Além disso, o MER estabelece a organização e o fluxo das informações dentro
 
 ### Fluxo de análise de dados até o core da aplicação (Gemini - Google).
 
-(IMAGEM DO FLUXO GEMINI)
+![Fluxo de Análise de Dados até o Core da Aplicação (Chronos + Gemini)](docs/images/fluxo-core-chronos-gemini.png)
 
 ### Estrutura da aplicação de desenvolvimento.
 
@@ -284,7 +327,7 @@ Além disso, o MER estabelece a organização e o fluxo das informações dentro
 - Responsabilidade: Definir contratos a serem honrados com bases nas entidades do sistema.
 
 3. Controller/http
-- Caminho: src/controllers/http/
+- Caminho: src/http/controller/
 - Responsabilidade: Enviar e receber requisições HTTP, tratando apenas requisição e resposta e retornando o status code adequado.
 
 4. lib/pg
@@ -300,11 +343,12 @@ Além disso, o MER estabelece a organização e o fluxo das informações dentro
 - Responsabilidade: Persistência de dados no banco de dados, sem lógica de negócio.
 
 7. Use-cases
-- Caminho: src/use-cases/
+- Caminho: src/useCases/
 - Responsabilidade: Aplicar a lógica de negócio e coordenar interações entre camadas, utilizando Factory Pattern quando necessário.
 
-8. app.ts
-- Responsabilidade: Arquivo de entrada da aplicação, inicializando o app.
+8. index.ts
+- Caminho: src/index.ts
+- Responsabilidade: Arquivo de entrada da aplicação, inicializando banco, seeds, rotas e Swagger.
 
 9. prismaClient.ts
 - Responsabilidade: Arquivo de configuração do prisma com o banco de dados Postgres.
@@ -329,7 +373,7 @@ Além disso, o MER estabelece a organização e o fluxo das informações dentro
 - Responsabilidade: Orquestração de containers da aplicação de desenvolvimento
 
 15. docker-compose.prod.yaml
-- Arquivo: docker-compose.pord.yaml
+- Arquivo: docker-compose.prod.yaml
 - Responsabilidade: Orquestração de containers da aplicação de produção
 
 16. dockerfile
@@ -349,6 +393,26 @@ Além disso, o MER estabelece a organização e o fluxo das informações dentro
 - Responsabilidade: Configuração do TypeScript
 
 ## Processo de Desenvolvimento  
+
+O desenvolvimento do projeto foi conduzido em etapas incrementais, iniciando pela modelagem das entidades e relacionamentos no PostgreSQL com Prisma. Com a base de dados definida, foi estruturada uma arquitetura em camadas separando responsabilidades entre controllers, casos de uso e repositórios, facilitando manutenção, evolução e organização do código.
+
+Na camada HTTP, os endpoints REST foram implementados em Express com validação de entrada via Zod e proteção por JWT nos recursos autenticados. Essa combinação ajudou a garantir consistência de dados na entrada da API e controle de acesso para operações sensíveis.
+
+Com os fluxos CRUD principais estabilizados (Professor, Período, Turma, Matéria e Aula), o módulo Chronos foi evoluído para integrar IA com Gemini, permitindo geração de plano de aula, conversa contextual por aula e geração de atividade complementar baseada em BNCC.
+
+Para acelerar validação funcional e homologação, o projeto utiliza seeds para popular dados essenciais na inicialização da aplicação. Em paralelo, a documentação dos endpoints foi centralizada no Swagger, garantindo visibilidade dos contratos da API e facilitando integração com frontend e testes manuais.
+
+Por fim, o projeto foi preparado para execução em ambiente local com Node.js e também via Docker Compose, mantendo padronização entre os ambientes de desenvolvimento e produção.
+
+## Testes
+
+Atualmente, o projeto não possui suíte de testes automatizados implementada. O script `npm test` ainda está como placeholder.
+
+As validações de comportamento vêm sendo realizadas via:
+
+- Swagger (`/api-docs`)
+- Requisições manuais por cliente HTTP (Postman/Insomnia)
+- Seeds para massa de dados inicial consistente
 
 ## Relatos dos Desafios Superados  
 
