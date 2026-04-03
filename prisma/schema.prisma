@@ -18,6 +18,8 @@ model Professor {
   dataCadastro  DateTime
   isAtivo       Boolean
   aulas         Aula[]
+  conversaAgentes ConversaAgente[]
+  planosAula      PlanoAula[]
 }
 
 model HabilidadeBNCC {
@@ -30,8 +32,7 @@ model HabilidadeBNCC {
   objetoConhecimento   ObjetoConhecimento @relation(fields: [objetoConhecimentoId], references: [id])
 
   competencias CompetenciaBNCC[]
-  planoAula    PlanoAula?        @relation(fields: [planoAulaId], references: [id])
-  planoAulaId  Int?
+  planosAula   PlanoAula[]
   avaliacao    Avaliacao?        @relation(fields: [avaliacaoId], references: [id])
   avaliacaoId  Int?
 }
@@ -39,8 +40,14 @@ model HabilidadeBNCC {
 model PlanoAula {
   id Int @id @default(autoincrement())
 
-  aulaId Int  @unique
+  aulaId Int
   aula   Aula @relation(fields: [aulaId], references: [id])
+
+  professorId Int
+  professor   Professor @relation(fields: [professorId], references: [id])
+
+  habilidadeBNCCId Int
+  habilidadeBNCC   HabilidadeBNCC @relation(fields: [habilidadeBNCCId], references: [id])
 
   objetivo          String
   metodologia       String
@@ -48,9 +55,9 @@ model PlanoAula {
   avaliacao         String
   dataCadastro      DateTime
 
-  habilidadesBNCC HabilidadeBNCC[]
-
   atividadeComplementars AtividadeComplementar[]
+
+  @@unique([aulaId, professorId])
 }
 
 model Avaliacao {
@@ -144,7 +151,7 @@ model Aula {
   professores           Professor[]
   turmaId               Int
   turma                 Turma       @relation(fields: [turmaId], references: [id])
-  planoAula             PlanoAula?
+  planoAula             PlanoAula[]
   materia               Materia?    @relation(fields: [materiaId], references: [id])
   materiaId             Int?
 
@@ -153,10 +160,14 @@ model Aula {
 
 model ConversaAgente {
   id        Int              @id @default(autoincrement())
-  aulaId    Int              @unique
+  aulaId    Int
   aula      Aula             @relation(fields: [aulaId], references: [id], onDelete: Cascade)
+  professorId Int
+  professor   Professor      @relation(fields: [professorId], references: [id], onDelete: Cascade)
   mensagens MensagemAgente[]
   criadoEm  DateTime         @default(now())
+
+  @@index([aulaId, professorId])
 }
 
 model MensagemAgente {
