@@ -12,8 +12,9 @@ export class GerarPlanoUseCase {
         this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
     }
 
-    async processar(aulaId: number, codigoHabilidade: string, tema: string): Promise<any> {
-        // 1. Busca a habilidade BNCC
+    async processar(aulaId: number, professorId: number, codigoHabilidade: string, tema: string): Promise<any> {
+        await this.planoAulaRepository.validarProfessorNaAula(professorId, aulaId);
+
         const habilidade = await this.habilidadeRepository.buscarPorCodigo(codigoHabilidade);
         if (!habilidade) return null;
 
@@ -45,9 +46,9 @@ export class GerarPlanoUseCase {
             // 3. Parse do JSON vindo da IA
             const planoIA = JSON.parse(respostaTexto);
 
-            // 4. Salva no banco vinculando à Aula e à Habilidade
             const planoSalvo = await this.planoAulaRepository.cadastrarPlano({
                 aulaId: Number(aulaId),
+                professorId,
                 codigoHabilidade: codigoHabilidade,
                 objetivo: planoIA.objetivo,
                 metodologia: planoIA.metodologia,

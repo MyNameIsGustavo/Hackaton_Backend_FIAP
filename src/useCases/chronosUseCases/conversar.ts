@@ -8,9 +8,8 @@ export class ConversarUseCase {
         this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
     }
 
-    async processar(aulaId: number, mensagemUsuario: string): Promise<any> {
-        // 1. Garante a existência da conversa vinculada à Aula
-        const conversa = await this.chatRepository.buscarOuCriarConversa(aulaId);
+    async processar(aulaId: number, professorId: number, mensagemUsuario: string, conversaId?: number): Promise<any> {
+        const conversa = await this.chatRepository.buscarOuCriarConversa(aulaId, professorId, conversaId);
 
         // 2. Busca histórico para o Gemini (Memória Contextual)
         const historicoBanco = await this.chatRepository.buscarHistorico(conversa.id);
@@ -29,12 +28,11 @@ export class ConversarUseCase {
 
         const chatIA = model.startChat({ history: historyMap });
 
-        // 4. Envia mensagem
+        await this.chatRepository.salvarMensagem(conversa.id, 'user', mensagemUsuario);
+
         const result = await chatIA.sendMessage(mensagemUsuario);
         const respostaIA = result.response.text();
 
-        // 5. Salva no banco (Persistência conforme seu novo schema)
-        await this.chatRepository.salvarMensagem(conversa.id, 'user', mensagemUsuario);
         await this.chatRepository.salvarMensagem(conversa.id, 'assistant', respostaIA);
 
         return {

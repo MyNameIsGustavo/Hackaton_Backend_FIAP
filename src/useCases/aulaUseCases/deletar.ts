@@ -4,7 +4,7 @@ import { IAula } from "../../entities/interfaces/IAula";
 export class DeletarAulaUseCase {
     constructor(private aulaRepository: IAulaRepository) { }
 
-    async processar(id: number): Promise<IAula | null> {
-        return await this.aulaRepository.deletarAula(id);
+    async processar(id: number, professorId?: number): Promise<IAula | null> {
+        return await this.aulaRepository.deletarAula(id, professorId);
     }
 }

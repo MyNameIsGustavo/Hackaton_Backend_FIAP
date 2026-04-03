@@ -18,7 +18,8 @@ export async function cadastro(request: Request, response: Response) {
         const dadosValidados = {
             ...resultadoValidacaoSchemaBody.data
         };
-        const aulaCadastrada = (await (await fabricaCadastroAula()).processar(dadosValidados))
+        const professorId = (request as any).usuario.id;
+        const aulaCadastrada = (await (await fabricaCadastroAula()).processar(dadosValidados, professorId))
 
         return response.status(201).json(aulaCadastrada);
     } catch (error) {

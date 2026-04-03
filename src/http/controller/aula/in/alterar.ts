@@ -33,8 +33,9 @@ export async function alterar(request: Request, response: Response) {
         }
 
         const { id } = resultadoValidacaoSchemaParametro.data;
+        const professorId = (request as any).usuario.id;
 
-        const resultadoProcessado = await objFabricaAlterarAula.processar(resultadoValidacaoSchemaBody.data, id);
+        const resultadoProcessado = await objFabricaAlterarAula.processar(resultadoValidacaoSchemaBody.data, id, professorId);
         if (!resultadoProcessado) {
             return response.status(404).json({ mensagem: 'Aula não encontrada' });
         }

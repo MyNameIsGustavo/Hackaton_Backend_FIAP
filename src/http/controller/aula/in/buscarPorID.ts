@@ -14,8 +14,13 @@ export async function buscarPorID(request: Request, response: Response) {
         }
 
         const { id } = resultadoValidacaoSchema.data;
+        const professorId = (request as any).usuario.id;
 
-        const resultadoProcessado = await objFabricaBuscarAulaPorID.processar(id);
+        const resultadoProcessado = await objFabricaBuscarAulaPorID.processar(id, professorId);
+
+        if (!resultadoProcessado) {
+            return response.status(404).json({ mensagem: 'Aula não encontrada' });
+        }
 
         return response.status(201).json(resultadoProcessado);
     } catch (error) {

@@ -4,7 +4,7 @@ import { AtividadeComplementar } from "../../entities/atividadeComplementar.enti
 export class BuscarAtividadesUseCase {
     constructor(private atividadeRepository: IAtividadeRepository) {}
 
-    async processar(aulaId: number): Promise<AtividadeComplementar[]> {
-        return await this.atividadeRepository.buscarAtividadesPorPlanoAula(aulaId);
+    async processar(aulaId: number, professorId: number): Promise<AtividadeComplementar[]> {
+        return await this.atividadeRepository.buscarAtividadesPorPlanoAula(aulaId, professorId);
     }
 }

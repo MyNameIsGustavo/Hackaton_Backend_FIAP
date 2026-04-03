@@ -3,5 +3,5 @@ import { IAtividadeComplementar } from "../entities/interfaces/IAtividadeComplem
 
 export interface IAtividadeRepository {
     salvarAtividade(dados: IAtividadeComplementar): Promise<AtividadeComplementar | null>;
-    buscarAtividadesPorPlanoAula(aulaId: number): Promise<AtividadeComplementar[]>;
+    buscarAtividadesPorPlanoAula(aulaId: number, professorId: number): Promise<AtividadeComplementar[]>;
 }

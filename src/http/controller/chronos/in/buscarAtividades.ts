@@ -18,9 +18,10 @@ export async function buscarAtividades(request: Request, response: Response) {
         }
 
         const { aulaId } = validacao.data;
+        const professorId = (request as any).usuario.id;
 
         const useCase = await fabricaBuscarAtividadesChronos();
-        const atividades = await useCase.processar(aulaId);
+        const atividades = await useCase.processar(aulaId, professorId);
 
         return response.status(200).json(atividades);
 

@@ -14,6 +14,6 @@ export interface IAula {
 
 export interface IAulaComRelacoes extends IAula {
     professores?: IProfessor[];
-    planoAula: IPlanoAula | null;
+    planoAula: IPlanoAula[];
     turma: ITurma;
 }

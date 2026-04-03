@@ -3,9 +3,39 @@ import { IPlanoAulaRepository } from "../planoAula.repository.interface";
 import { PlanoAula } from "../../entities/planoAula.entity";
 
 export class PlanoAulaRepository implements IPlanoAulaRepository {
+    async validarProfessorNaAula(professorId: number, aulaId: number): Promise<void> {
+        const aula = await prisma.aula.findFirst({
+            where: {
+                id: aulaId,
+                professores: {
+                    some: { id: professorId }
+                }
+            },
+            select: { id: true }
+        });
+
+        if (!aula) {
+            throw new Error("Professor não tem acesso a esta aula.");
+        }
+    }
+
+    async buscarPlanoPorAulaEProfessor(aulaId: number, professorId: number): Promise<PlanoAula | null> {
+        await this.validarProfessorNaAula(professorId, aulaId);
+
+        const plano = await prisma.planoAula.findFirst({
+            where: {
+                aulaId,
+                professorId
+            }
+        });
+
+        return plano as unknown as PlanoAula | null;
+    }
+
     async cadastrarPlano(dados: any): Promise<PlanoAula | null> {
         try {
-            // 1. Buscamos a habilidade para obter o ID real (já que 'codigo' não é unique no schema)
+            await this.validarProfessorNaAula(dados.professorId, dados.aulaId);
+
             const habilidadeExistente = await prisma.habilidadeBNCC.findFirst({
                 where: { codigo: dados.codigoHabilidade }
             });
@@ -14,18 +44,29 @@ export class PlanoAulaRepository implements IPlanoAulaRepository {
                 throw new Error(`Habilidade BNCC ${dados.codigoHabilidade} não encontrada.`);
             }
 
-            // 2. Criamos o plano usando o ID encontrado
-            const planoCriado = await prisma.planoAula.create({
-                data: {
-                    aulaId: dados.aulaId,
+            const planoCriado = await prisma.planoAula.upsert({
+                where: {
+                    aulaId_professorId: {
+                        aulaId: dados.aulaId,
+                        professorId: dados.professorId
+                    }
+                },
+                update: {
                     objetivo: dados.objetivo,
                     metodologia: dados.metodologia,
                     recursosDidaticos: dados.recursosDidaticos,
                     avaliacao: dados.avaliacao,
-                    dataCadastro: new Date(),
-                    habilidadesBNCC: {
-                        connect: { id: habilidadeExistente.id } // Usamos 'id' que é o campo único obrigatório
-                    }
+                    habilidadeBNCCId: habilidadeExistente.id
+                },
+                create: {
+                    aulaId: dados.aulaId,
+                    professorId: dados.professorId,
+                    habilidadeBNCCId: habilidadeExistente.id,
+                    objetivo: dados.objetivo,
+                    metodologia: dados.metodologia,
+                    recursosDidaticos: dados.recursosDidaticos,
+                    avaliacao: dados.avaliacao,
+                    dataCadastro: new Date()
                 }
             });
 
@@ -43,13 +84,8 @@ export class PlanoAulaRepository implements IPlanoAulaRepository {
     ) {
         const skip = (pagina - 1) * limite;
 
-        // Filtro: Planos vinculados a aulas que possuem o professor logado
         const whereClause: any = {
-            aula: {
-                professores: {
-                    some: { id: professorId }
-                }
-            }
+            professorId
         };
 
         // Adiciona busca por termo no objetivo ou metodologia
@@ -68,7 +104,7 @@ export class PlanoAulaRepository implements IPlanoAulaRepository {
                 orderBy: { dataCadastro: 'desc' },
                 include: {
                     aula: true,
-                    habilidadesBNCC: true
+                    habilidadeBNCC: true
                 }
             }),
             prisma.planoAula.count({ where: whereClause })

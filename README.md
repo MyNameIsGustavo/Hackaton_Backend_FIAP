@@ -68,21 +68,24 @@ O projeto de desenvolvimento no segmento de back-end foi idealizado utilizando a
     - Editar: Atualizar informações de uma matéria existente.
 
 5. Entidade Aulas
-    - Buscar todos: Listar todas as aulas cadastradas no sistema, incluindo informações de turma, matéria, professor e período.
-    - Cadastro: Criar uma nova aula, associando-a a uma turma, matéria, professor e período específicos, e incluindo data, horário e plano de aula.
-    - Buscar por ID: Recuperar informações completas de uma aula específica.
-    - Deletar: Remover uma aula do sistema, garantindo que não haja inconsistências nos dados de turmas e professores.
-    - Editar: Alterar informações de uma aula já cadastrada, como data, horário, plano de aula ou professor responsável.
+    - Buscar todos: Listar apenas as aulas vinculadas ao professor autenticado, incluindo informações de turma, matéria e professores relacionados.
+    - Cadastro: Criar uma nova aula e vinculá-la automaticamente ao professor logado.
+    - Buscar por ID: Recuperar informações completas de uma aula específica somente quando ela pertencer ao professor autenticado.
+    - Deletar: Remover uma aula do sistema, respeitando o vínculo do professor autenticado com a aula.
+    - Editar: Alterar informações de uma aula já cadastrada apenas quando a aula pertencer ao professor autenticado.
 
 6. Entidade Planos de aulas
-    - Cadastrar plano de aula: Gerar plano de aula com base nas habilidades BNCC e tema
-    - Listar planos de aulas: Buscar todos os planos de aulas gerados.
+    - Cadastrar plano de aula: Gerar plano de aula com base nas habilidades BNCC e tema.
+    - Listar planos de aulas: Buscar os planos de aula gerados pelo professor autenticado.
+    - Escopo do plano: Cada plano é isolado por professor e aula.
 
 7. Entidade AGENTE Chronos
     - Enviar mensagem: Enviar mensagem para o Agente Chronos e receber uma resposta do agente.
-    - Buscar historico: Buscar histórico de conversas para uma aula gerada especifíca.
+    - Buscar historico: Buscar histórico da conversa mais recente de uma aula específica ou de uma conversa específica via `conversaId`.
     - Gerar atividade: Gerar atividade complementar com IA baseada na BNCC.
-    - Listar atividades: Listar atividades complementares de um plano de aula especifico.
+    - Listar atividades: Listar atividades complementares do plano de aula do professor autenticado.
+    - Múltiplas conversas: Permitir múltiplas conversas para a mesma aula do mesmo professor.
+    - Persistência contextual: A geração de atividade também é registrada no histórico da conversa.
 
 8. Entidade Habilidades BNCC
     - Habilidades BNCC: Obter filtros (materias e anos) para seleção da BNCC
@@ -106,7 +109,17 @@ Recomenda-se que os pré-requisitos de instalação de tecnologia em seu ambient
 
 5. Para replicação completa do ambiente no qual foi desenvolvido o projeto, instale o WSL com a distribuição Ubuntu. Para mais instruções siga está documentação oficial distribuida pela Microsoft: https://learn.microsoft.com/pt-br/windows/wsl/install
 
-6. Com o Docker configurado em seu ambiente e localizado dentro do diretório do projeto, forneça o seguinte comando para iniciar a aplicação Docker localmente, este comando deve instalar todas dependências do projeto conforme a instrução no arquivo dockerfile: docker compose -f docker-compose.dev.yaml --env-file .env.dev up
+6. Com o Docker configurado em seu ambiente e localizado dentro do diretório do projeto, utilize o comando abaixo para subir a aplicação localmente com build da imagem, aplicação das migrations e geração do Prisma Client:
+
+```bash
+docker compose --env-file .env.dev -f docker-compose.dev.yaml up -d --build
+```
+
+O container do backend executa automaticamente:
+
+```bash
+npx prisma migrate deploy && npx prisma generate && npm run dev
+```
 
 ### Variáveis de ambiente obrigatórias
 
@@ -123,6 +136,7 @@ Recomenda-se que os pré-requisitos de instalação de tecnologia em seu ambient
 
 ```bash
 npm install
+npx prisma migrate deploy
 npm run dev
 ```
 
@@ -200,47 +214,75 @@ A documentação completa da API pode ser acessada via Swagger em:
 - Alguns endpoints aceitam ordenação com `ordenaPor` e `ordem`.
 - Habilidades BNCC aceitam filtros por `materia`/`materiaId` e `ano`/`anoEscolar`.
 
+### Comandos úteis com Docker
+
+Subir ambiente de desenvolvimento:
+
+```bash
+docker compose --env-file .env.dev -f docker-compose.dev.yaml up -d --build
+```
+
+Ver logs do backend:
+
+```bash
+docker compose --env-file .env.dev -f docker-compose.dev.yaml logs -f backend_hackaton
+```
+
+Ver logs do backend e do banco:
+
+```bash
+docker compose --env-file .env.dev -f docker-compose.dev.yaml logs -f backend_hackaton db_hackaton_dev
+```
+
 ### Endpoints da entidade Aulas
 
 - GET /aulas/{id} – Buscar aula por ID
-Permite recuperar os detalhes completos de uma aula específica.
+Permite recuperar os detalhes completos de uma aula específica do professor autenticado.
 
 - GET /aulas – Buscar todas as aulas
-Retorna a listagem de todas as aulas cadastradas.
+Retorna a listagem das aulas vinculadas ao professor autenticado.
 
 - POST /aula – Cadastrar nova aula
-Permite criar uma nova aula associando turma, matéria, professor e período.
+Permite criar uma nova aula associando turma e matéria e vinculando automaticamente o professor autenticado.
 
 - PUT /aula/{id} – Atualizar aula
-Atualiza informações de uma aula existente.
+Atualiza informações de uma aula existente do professor autenticado.
 
 - DELETE /aula/{id} – Deletar aula por ID
-Remove uma aula do sistema.
+Remove uma aula do professor autenticado.
 
 ### Endpoints de Planos de Aula
 
 - POST /chronos/gerar-plano – Gerar plano de aula
-Gera automaticamente um plano de aula com base na habilidade BNCC e no tema informado.
+Gera automaticamente um plano de aula com base na habilidade BNCC e no tema informado. O plano é isolado por professor e aula.
 
 - GET /chronos/planos – Listar planos de aula
-Retorna todos os planos de aula gerados.
+Retorna apenas os planos de aula do professor autenticado.
 
 ### Endpoints do Agente Chronos
 
 - POST /chronos/conversar – Enviar mensagem para IA
-Permite interação com o agente para suporte pedagógico.
+Permite interação com o agente para suporte pedagógico. Aceita `aulaId`, `mensagem` e `conversaId` opcional para continuar uma conversa já existente.
 
 - GET /chronos/conversar/{aulaId} – Histórico de conversa
-Retorna o histórico de interações vinculadas a uma aula.
+Retorna o histórico da conversa mais recente da aula para o professor autenticado. Também aceita `conversaId` via query string para recuperar uma conversa específica.
 
 - GET /chronos/conversas – Histórico completo do professor
-Retorna todas as conversas do professor autenticado, agrupadas por aula.
+Retorna todas as conversas do professor autenticado. Um mesmo professor pode ter múltiplas conversas para a mesma aula.
 
 - POST /chronos/gerar-atividade – Gerar atividade complementar
-Gera atividades com base na BNCC utilizando inteligência artificial.
+Gera atividades com base na BNCC utilizando inteligência artificial. Se ainda não existir plano para aquela combinação de professor e aula, o backend gera um plano base antes de salvar a atividade. A atividade também é persistida no histórico da conversa.
 
 - GET /chronos/atividades/{aulaId} – Listar atividades
-Lista atividades complementares associadas a um plano de aula.
+Lista atividades complementares associadas ao plano de aula do professor autenticado para aquela aula.
+
+### Observações importantes do Chronos
+
+- Conversa, plano de aula e atividades são isolados por professor.
+- O histórico de conversa é persistido em `ConversaAgente` e `MensagemAgente`.
+- A geração de atividade cria mensagens no histórico da conversa além de salvar a atividade.
+- Um professor pode abrir múltiplas conversas para a mesma aula.
+- O frontend pode continuar o chat enviando `conversaId` para manter o contexto correto.
 
 ### Endpoints de Habilidades BNCC
 

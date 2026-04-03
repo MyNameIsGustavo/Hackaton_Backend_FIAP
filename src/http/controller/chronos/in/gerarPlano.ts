@@ -22,10 +22,10 @@ export async function gerarPlano(request: Request, response: Response) {
         }
 
         const { aulaId, codigoHabilidade, tema } = resultadoValidacao.data;
+        const professorId = (request as any).usuario.id;
 
-        // Instanciação via fábrica e execução do processo
         const objGerarPlanoUseCase = await fabricaGerarPlanoChronos();
-        const resultado = await objGerarPlanoUseCase.processar(aulaId, codigoHabilidade, tema);
+        const resultado = await objGerarPlanoUseCase.processar(aulaId, professorId, codigoHabilidade, tema);
 
         if (!resultado) {
             return response.status(404).json({ mensagem: 'Habilidade não encontrada ou erro na geração' });

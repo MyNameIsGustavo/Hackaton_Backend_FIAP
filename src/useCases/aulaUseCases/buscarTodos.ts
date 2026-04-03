@@ -12,7 +12,7 @@ type FiltroAula = {
 export class BuscarTodasAulasUseCase {
     constructor(private aulaRepository: IAulaRepository) { }
 
-    async processar(filtro?: FiltroAula): Promise<IAulaComRelacoes[]> {
-        return await this.aulaRepository.buscarTodasAulas(filtro);
+    async processar(filtro?: FiltroAula, professorId?: number): Promise<IAulaComRelacoes[]> {
+        return await this.aulaRepository.buscarTodasAulas(filtro, professorId);
     }
 }

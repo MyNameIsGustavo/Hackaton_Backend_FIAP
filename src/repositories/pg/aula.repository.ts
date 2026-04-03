@@ -3,10 +3,24 @@ import { IAulaRepository } from "../aula.repository.interface";
 import { IAula, IAulaComRelacoes } from "../../entities/interfaces/IAula";
 
 export class AulaRepository implements IAulaRepository {
+    private whereProfessorTemAcesso(id: number, professorId?: number) {
+        if (!professorId) {
+            return { id };
+        }
 
-    async deletarAula(id: number): Promise<IAula | null> {
+        return {
+            id,
+            professores: {
+                some: { id: professorId }
+            }
+        };
+    }
+
+    async deletarAula(id: number, professorId?: number): Promise<IAula | null> {
         try {
-            const aulaSelecionada = await prisma.aula.findUnique({ where: { id: id } });
+            const aulaSelecionada = await prisma.aula.findFirst({
+                where: this.whereProfessorTemAcesso(id, professorId)
+            });
 
             if (!aulaSelecionada) return null;
             const aulaDeletada = await prisma.aula.delete({ where: { id: id } })
@@ -17,20 +31,30 @@ export class AulaRepository implements IAulaRepository {
         }
     }
 
-    async buscarTodasAulas(filtro: { nomeAula?: string; pagina?: number; limite?: number; ordenaPor?: string; ordem?: "asc" | "desc"; }): Promise<IAulaComRelacoes[]> {
+    async buscarTodasAulas(
+        filtro: { nomeAula?: string; pagina?: number; limite?: number; ordenaPor?: string; ordem?: "asc" | "desc"; },
+        professorId?: number
+    ): Promise<IAulaComRelacoes[]> {
         try {
             const pagina = filtro.pagina ?? 1;
             const limite = filtro.limite ?? 10;
+            const whereClause: any = {};
+
+            if (filtro.nomeAula) {
+                whereClause.nome = {
+                    contains: filtro.nomeAula,
+                    mode: "insensitive"
+                };
+            }
+
+            if (professorId) {
+                whereClause.professores = {
+                    some: { id: professorId }
+                };
+            }
 
             return await prisma.aula.findMany({
-                where: filtro.nomeAula
-                    ? {
-                        nome: {
-                            contains: filtro.nomeAula,
-                            mode: "insensitive"
-                        }
-                    }
-                    : undefined,
+                where: whereClause,
 
                 orderBy: {
                     [filtro.ordenaPor ?? "nome"]: filtro.ordem ?? "asc"
@@ -53,9 +77,17 @@ export class AulaRepository implements IAulaRepository {
         }
     }
 
-    async cadastrarAula(dados: IAula): Promise<IAula | null> {
+    async cadastrarAula(dados: IAula, professorId?: number): Promise<IAula | null> {
         try {
-            const aulaCadastrada = await prisma.aula.create({ data: dados });
+            const data: any = { ...dados };
+
+            if (professorId) {
+                data.professores = {
+                    connect: { id: professorId }
+                };
+            }
+
+            const aulaCadastrada = await prisma.aula.create({ data });
 
             if (!aulaCadastrada) return null;
 
@@ -65,9 +97,11 @@ export class AulaRepository implements IAulaRepository {
         }
     }
 
-    async buscarAulaPorID(id: number): Promise<IAula | null> {
+    async buscarAulaPorID(id: number, professorId?: number): Promise<IAula | null> {
         try {
-            const aulaSelecionada = await prisma.aula.findUnique({ where: { id: id } });
+            const aulaSelecionada = await prisma.aula.findFirst({
+                where: this.whereProfessorTemAcesso(id, professorId)
+            });
 
             if (!aulaSelecionada) return null;
 
@@ -77,9 +111,11 @@ export class AulaRepository implements IAulaRepository {
         }
     }
 
-    async alterarAula(dados: IAula, id: number): Promise<IAula | null> {
+    async alterarAula(dados: IAula, id: number, professorId?: number): Promise<IAula | null> {
         try {
-            const aulaSelecionada = await prisma.aula.findUnique({ where: { id: id } });
+            const aulaSelecionada = await prisma.aula.findFirst({
+                where: this.whereProfessorTemAcesso(id, professorId)
+            });
 
             if (!aulaSelecionada) return null;
 

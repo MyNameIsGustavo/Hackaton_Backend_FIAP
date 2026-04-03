@@ -3,11 +3,11 @@ import { ChatRepository } from "../../repositories/pg/chat.repository";
 export class BuscarHistoricoUseCase {
     constructor(private chatRepository: ChatRepository) {}
 
-    async processar(aulaId: number) {
-        // Garante que a conversa existe (ou cria uma vazia caso seja o primeiro acesso)
-        const conversa = await this.chatRepository.buscarOuCriarConversa(aulaId);
-        
-        // Retorna as mensagens atreladas a esta conversa
+    async processar(aulaId: number, professorId: number, conversaId?: number) {
+        const conversa = conversaId
+            ? await this.chatRepository.buscarConversaPorId(conversaId, professorId, aulaId)
+            : await this.chatRepository.buscarUltimaConversaPorProfessorEAula(aulaId, professorId)
+                ?? await this.chatRepository.criarConversa(aulaId, professorId);
         const historico = await this.chatRepository.buscarHistorico(conversa.id);
         
         return {

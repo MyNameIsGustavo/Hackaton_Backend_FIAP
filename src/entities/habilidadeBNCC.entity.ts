@@ -14,8 +14,7 @@ export class HabilidadeBNCC {
 
     competencias: CompetenciaBNCC[];
 
-    planoAulaId?: number | null;
-    planoAula?: PlanoAula | null;
+    planosAula: PlanoAula[];
 
     avaliacaoId?: number | null;
     avaliacao?: Avaliacao | null;
@@ -28,8 +27,7 @@ export class HabilidadeBNCC {
         objetoConhecimentoId: number,
         competencias: CompetenciaBNCC[] = [],
         objetoConhecimento?: ObjetoConhecimento,
-        planoAulaId?: number | null,
-        planoAula?: PlanoAula | null,
+        planosAula: PlanoAula[] = [],
         avaliacaoId?: number | null,
         avaliacao?: Avaliacao | null
     ) {
@@ -40,8 +38,7 @@ export class HabilidadeBNCC {
         this.objetoConhecimentoId = objetoConhecimentoId;
         this.competencias = competencias;
         this.objetoConhecimento = objetoConhecimento;
-        this.planoAulaId = planoAulaId;
-        this.planoAula = planoAula;
+        this.planosAula = planosAula;
         this.avaliacaoId = avaliacaoId;
         this.avaliacao = avaliacao;
     }

@@ -4,6 +4,7 @@ import { fabricaBuscarTodasAulas } from '../../../../useCases/aulaUseCases/fabri
 export async function buscarTodos(request: Request, response: Response) {
     try {
         const { aulas, pagina, limite, ordenaPor, ordem } = request.query;
+        const professorId = (request as any).usuario.id;
 
         const objFabricaBuscarTodasAulas = await fabricaBuscarTodasAulas();
 
@@ -13,7 +14,7 @@ export async function buscarTodos(request: Request, response: Response) {
             limite: Number(limite) || 10,
             ordenaPor: typeof ordenaPor === "string" ? ordenaPor : "nome",
             ordem: ordem === "desc" ? "desc" : "asc"
-        });
+        }, professorId);
 
         return response.status(201).json(resultadoProcessado);
     } catch (error) {

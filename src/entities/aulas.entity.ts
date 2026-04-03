@@ -15,7 +15,7 @@ export class Aula {
     turmaId: number;
     turma?: Turma;
 
-    planoAula?: PlanoAula | null;
+    planoAula: PlanoAula[];
 
     materiaId?: number | null;
     materia?: Materia | null;
@@ -29,7 +29,7 @@ export class Aula {
         turmaId: number,
         professores: Professor[] = [],
         turma?: Turma,
-        planoAula?: PlanoAula | null,
+        planoAula: PlanoAula[] = [],
         materiaId?: number | null,
         materia?: Materia | null
     ) {

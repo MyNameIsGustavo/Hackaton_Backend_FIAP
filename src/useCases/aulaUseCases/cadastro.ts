@@ -4,7 +4,7 @@ import { IAula } from "../../entities/interfaces/IAula";
 export class CadastroAulaUseCase {
     constructor(private aulaRepository: IAulaRepository) { }
 
-    async processar(dados: IAula): Promise<IAula | null> {
-        return await this.aulaRepository.cadastrarAula(dados);
+    async processar(dados: IAula, professorId?: number): Promise<IAula | null> {
+        return await this.aulaRepository.cadastrarAula(dados, professorId);
     }
 }
