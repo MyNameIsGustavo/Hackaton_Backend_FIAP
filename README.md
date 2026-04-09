@@ -17,7 +17,7 @@
 
 ## Membros do grupo 25 
 - Carlos Adriano - RM366258
-- Cristhian Mendes - Rm365590
+- Cristhian Mendes - RM365590
 - ⁠Gisele Cidral - RM366463
 - ⁠Gustavo Rocha - RM365401
 

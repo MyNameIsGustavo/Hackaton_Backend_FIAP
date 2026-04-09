@@ -10,6 +10,7 @@ import { aulaRotas } from "./http/controller/aula/rotas";
 import { chronosRotas } from "./http/controller/chronos/rotas";
 import { habilidadeRotas} from "./http/controller/habilidade/rotas"
 import dotenv from "dotenv";
+import { sendWhatsAppMessage } from "./lib/pg/whatsApp";
 
 dotenv.config();
 const envFile = process.env.NODE_ENV === 'PRODUCAO' ? '.env' : '.env.dev';
