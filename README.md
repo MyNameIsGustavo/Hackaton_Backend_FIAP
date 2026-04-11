@@ -470,5 +470,27 @@ Em relação às tecnologias utilizadas, optamos por trabalhar exclusivamente co
 Por fim, outro ponto de destaque foi o aprendizado relacionado às regras de negócio. Até então, eu não havia tido um contato aprofundado com esse tipo de análise fora do ambiente acadêmico da Pós-Tech. Por isso, considero que esse foi um dos principais desafios superados durante toda a jornada.
 
 ## Entregas  
+Como resultado do esforço de desenvolvimento e da aplicação das práticas consolidadas ao longo da Pós-Tech, o grupo realizou as seguintes entregas funcionais e arquiteturais para compor o MVP:
+
+- Repositório de Código Estruturado: Código-fonte versionado e organizado seguindo princípios de separação de responsabilidades, facilitando a manutenção e a escalabilidade.
+
+- API RESTful Funcional e Segura: Back-end desenvolvido em Node.js com TypeScript, contendo rotas protegidas por autenticação JWT e validação de dados de entrada rigorosa utilizando Zod.
+
+- Integração com Inteligência Artificial (Agente Chronos): Implementação completa do fluxo de comunicação com a API do Google Gemini, entregando geração de planos de aula automatizados, histórico de conversas contextualizado e criação de atividades baseadas nas diretrizes da BNCC.
+
+- Documentação Interativa (Swagger): Mapeamento detalhado de todos os endpoints, parâmetros e respostas esperadas, disponível tanto no ambiente de desenvolvimento local quanto em produção, garantindo um contrato claro para a integração com o front-end.
+
+- Infraestrutura Containerizada: Configuração completa com Docker e Docker Compose, garantindo a paridade entre os ambientes de desenvolvimento e produção, com orquestração simplificada do banco de dados e da aplicação.
+
+- Modelagem de Dados e Persistência: Banco de dados PostgreSQL estruturado e gerenciado via Prisma ORM, acompanhado de Seeds para popular a base com dados iniciais (professores, matérias, habilidades BNCC, turmas), otimizando o processo de testes e validação.
+
+- Deploy em Nuvem: Disponibilização da aplicação e do banco de dados na plataforma Render, permitindo o consumo real da API e a demonstração prática da prova de conceito do Hackathon.
 
 ## Conclusão
+O desenvolvimento deste projeto para o Hackathon da FIAP representou a consolidação prática de todo o conhecimento técnico e analítico adquirido durante a Pós-Tech em Full Stack Development. O desafio de criar uma ferramenta que impactasse positivamente o dia a dia dos professores foi atendido através da construção de um Produto Mínimo Viável (MVP) robusto, focado em resolver dores reais do ambiente educacional: o tempo gasto no planejamento de aulas e a complexidade do alinhamento com a Base Nacional Comum Curricular (BNCC).
+
+Sob a perspectiva técnica, a escolha de tecnologias como Node.js, TypeScript e PostgreSQL, aliada a ferramentas de infraestrutura como Docker, permitiu a construção de uma base sólida. A arquitetura foi desenhada com uma clara separação de responsabilidades (camadas de HTTP, Casos de Uso e Repositórios), o que não apenas garante a escalabilidade do sistema, mas também reflete boas práticas de engenharia de software necessárias para aplicações modernas.
+
+O grande diferencial tecnológico da solução entregue é o Agente Chronos. A integração com modelos de IA generativa (Google Gemini) elevou a aplicação de um simples sistema de gestão acadêmica (CRUDs) para uma verdadeira plataforma de assistência pedagógica. A capacidade de manter o contexto das conversas, gerar planos de aula e atividades complementares isoladas por professor e turma demonstra um uso maduro da inteligência artificial para otimizar fluxos de trabalho humanos.
+
+Por fim, a execução deste projeto superou o desafio técnico de codificação, exigindo da equipe o entendimento de regras de negócio específicas da área da educação, trabalho colaborativo eficiente e decisões arquiteturais estratégicas. O resultado é uma API completa, bem documentada e pronta para evolução, provando que o uso de tecnologia e inteligência artificial tem o potencial de transformar a gestão educacional, permitindo que os docentes foquem naquilo que mais importa: o ensino.
